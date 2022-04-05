@@ -108,7 +108,7 @@ The first command will add and stage all files in your project directory that ar
 
 Hop over to your preferred git hosting provider ([Github](https://github.com) for example) and create a new repository to host this project. Make sure the default branch is se tto the same name as the branch on your local machine to avoid any confusion.
 
-On Github you can change yur global default branch name to whatever you like by going to:
+On Github you can change your global default branch name to whatever you like by going to:
 
 ```
 Settings -> Repositories -> Repository default branch
@@ -492,11 +492,8 @@ Lastly, before we run Storybook itself, let's add some helpful values in `storyb
 
 `storybook/preview.js`
 ```js
-import { Suspense } from 'react';
 import '../styles/globals.css';
 import * as NextImage from 'next/image';
-import { I18nextProvider } from 'react-i18next';
-import i18n from './i18n';
 
 const BREAKPOINTS_INT = {
   xs: 375,
@@ -660,7 +657,7 @@ import BaseTemplate, { IBaseTemplate } from './BaseTemplate';
 import { mockBaseTemplateProps } from './BaseTemplate.mocks';
 
 export default {
-  title: 'templates/base',
+  title: 'templates/BaseTemplate',
   component: BaseTemplate,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {},
@@ -698,3 +695,250 @@ Now that we're starting to create more files it's good to get into the habit of 
 ## Creating a Real Component
 
 Since we have our template, let's go through the process of using it to create a real component.
+
+Create `components/cards` directory.  Then copy the entirety of the `base` directory from `templates` into `cards` and rename it `cat`.  We are going to make a `CatCard`.  Rename each of the files to match.  When done it should look like this:
+
+![Component Directory Structure](https://res.cloudinary.com/dqse2txyi/image/upload/v1649134894/blogs/nextjs-fullstack-app-template/component-directory-structure_ddw1ll.png)
+
+Now you can press `ctrl + shift + F` (or mac equivalent) in VS Code to do a full project search and replace.  Include only `components/cards/cat` and do a replace for `CatCard` to replace `BaseTemplate`.  It should look like the following:
+
+![VS Code Find Replace](https://res.cloudinary.com/dqse2txyi/image/upload/v1649134987/blogs/nextjs-fullstack-app-template/vscode-find-replace_ithpow.png)
+
+Now you're ready to work, you've got a clean pre-generated template to work from that includes a story and mock data for your card.  Pretty handy!  Let's make it look like a real card:
+
+_(For the record I did not create this beautiful card, it's based on an example created [here](https://codepen.io/lyon-etyo/pen/OJmyMGd) by the talented Lyon Etyo)_
+
+`CatCard.tsx`
+```tsx
+import styles from './CatCard.module.css';
+import Image from 'next/image';
+
+export interface ICatCard {
+  tag: string;
+  title: string;
+  body: string;
+  author: string;
+  time: string;
+}
+
+const CatCard: React.FC<ICatCard> = ({ tag, title, body, author, time }) => {
+  return (
+    <div className={styles.container}>
+      <div className={styles.card}>
+        <div className={styles.card__header}>
+          <Image
+            src="/time-cat.jpg"
+            alt="card__image"
+            className={styles.card__image}
+            width="600"
+            height="400"
+          />
+        </div>
+        <div className={styles.card__body}>
+          <span className={`${styles.tag} ${styles['tag-blue']}`}>{tag}</span>
+          <h4>{title}</h4>
+          <p>{body}</p>
+        </div>
+        <div className={styles.card__footer}>
+          <div className={styles.user}>
+            <img
+              src="https://i.pravatar.cc/40?img=3"
+              alt="user__image"
+              className={styles.user__image}
+            />
+            <div className={styles.user__info}>
+              <h5>{author}</h5>
+              <small>{time}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CatCard;
+```
+
+Set the styles:
+
+`CatCard.module.css`
+```css
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
+.container {
+  margin: 1rem;
+}
+
+.container * {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+.card__image {
+  max-width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.card {
+  font-family: 'Quicksand', sans-serif;
+  display: flex;
+  flex-direction: column;
+  width: clamp(20rem, calc(20rem + 2vw), 22rem);
+  overflow: hidden;
+  box-shadow: 0 0.1rem 1rem rgba(0, 0, 0, 0.1);
+  border-radius: 1em;
+  background: #ece9e6;
+  background: linear-gradient(to right, #ffffff, #ece9e6);
+}
+
+.card__body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tag {
+  align-self: flex-start;
+  padding: 0.25em 0.75em;
+  border-radius: 1em;
+  font-size: 0.75rem;
+}
+
+.tag-blue {
+  background: #56ccf2;
+  background: linear-gradient(to bottom, #2f80ed, #56ccf2);
+  color: #fafafa;
+}
+
+.card__body h4 {
+  font-size: 1.5rem;
+  text-transform: capitalize;
+}
+
+.card__footer {
+  display: flex;
+  padding: 1rem;
+  margin-top: auto;
+}
+
+.user {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.user__image {
+  border-radius: 50%;
+}
+
+.user__info > small {
+  color: #666;
+}
+
+```
+
+And set the mock data:
+
+`CatCard.mocks.ts`
+```ts
+import { ICatCard } from './CatCard';
+
+const base: ICatCard = {
+  tag: 'Felines',
+  title: `What's new in Cats`,
+  body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi perferendis molestiae non nemo doloribus. Doloremque, nihil! At ea atque quidem!',
+  author: 'Alex',
+  time: '2h ago',
+};
+
+export const mockCatCardProps = {
+  base,
+};
+```
+
+Note that this uses an image of a cat `(/time-cat.jpg)` from the project's public directory.  You can find it in the project repository.
+
+Also note that we did not even need to update the CatCard story at all!  It just pulls everything automatically.
+
+Run storybook and if you're lucky you'll be greeted with:
+
+![Storybook Cat Card](https://res.cloudinary.com/dqse2txyi/image/upload/v1649136596/blogs/nextjs-fullstack-app-template/cat-card-storybook_f10yic.png)
+
+This component can then easily be dropped anywhere in your actual application.  Use the `mock` props in the short term while testing and replace with real props when you're ready!
+
+`pages/index.tsx`
+```tsx
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import Image from 'next/image';
+import CatCard from '../components/cards/cat/CatCard';
+import { mockCatCardProps } from '../components/cards/cat/CatCard.mocks';
+import styles from '../styles/Home.module.css';
+
+const Home: NextPage = () => {
+  return (
+    <div className={styles.container}>
+      <Head>
+        <title>Create Next App</title>
+        <meta name="description" content="Generated by create next app" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      <main className={styles.main}>
+        <h1 className={styles.title}>
+          Welcome to <a href="https://nextjs.org">Next.js!</a>
+        </h1>
+
+        <div className={styles.grid}>
+          <CatCard {...mockCatCardProps.base} />
+          <CatCard {...mockCatCardProps.base} />
+          <CatCard {...mockCatCardProps.base} />
+          <CatCard {...mockCatCardProps.base} />
+        </div>
+      </main>
+
+      <footer className={styles.footer}>
+        <a
+          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Powered by{' '}
+          <span className={styles.logo}>
+            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+          </span>
+        </a>
+      </footer>
+    </div>
+  );
+};
+
+export default Home;
+```
+
+
+Let's take a look at the final masterpiece with:
+
+```
+yarn dev
+```
+
+![Final Masterpiece](https://res.cloudinary.com/dqse2txyi/image/upload/v1649137105/blogs/nextjs-fullstack-app-template/final-masterpiece_cbpxu1.png)
+
+
+## Conclusion
+
+I hope you found this tutorial and learned something about setting up a solid and scaleable NextJs project for you and your team.
+
+This is the first part of a mutli-part series on creating a production quality NextJs app template.  IN coming installments we will also look at:
+
+- An example app with multiple components, API routes, `getStaticProps` and `getServerSide` Props
+- Unit testing and end to end testing
+- Database connection with Prisma and your choice of DB adapter (we'll use Supabase and Postgres)
+- Authentication and SSO with next-auth
+- Internationalization with i18next and i18Nexus
+
+Stay tuned and please don't hesitate to ask any questions, I'm happy to answer if I can.

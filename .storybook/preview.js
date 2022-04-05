@@ -1,8 +1,5 @@
-import { Suspense } from 'react';
 import '../styles/globals.css';
 import * as NextImage from 'next/image';
-import { I18nextProvider } from 'react-i18next';
-import i18n from './i18n';
 
 const BREAKPOINTS_INT = {
   xs: 375,
