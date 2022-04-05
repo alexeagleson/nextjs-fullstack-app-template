@@ -1,6 +1,6 @@
 ## Project Setup
 
-We'll begin by creating a default NextJs application with a Typescript template.
+We'll begin by creating a default Next.js application with a Typescript template.
 
 ```bash
 npx create-next-app --ts nextjs-fullstack-app-template
@@ -26,7 +26,7 @@ Also recommended to run
 yarn build
 ```
 
-To ensure you can successfully do a production build of the project. It's recommended (but not required) to close your dev server when running a NextJs build. Most of the time there is no issue but occasionally the build can put your dev server in a weird state that requires a restart.
+To ensure you can successfully do a production build of the project. It's recommended (but not required) to close your dev server when running a Next.js build. Most of the time there is no issue but occasionally the build can put your dev server in a weird state that requires a restart.
 
 You should get a nice little report on the command line of all the pages built with green coloured text implying they are small and efficient. We'll try to keep them that way as we develop the project.
 
@@ -34,8 +34,8 @@ You should get a nice little report on the command line of all the pages built w
 
 We would like for all developers working on this project to use the same Node engine and package manager we are using. TO do that we create two new files:
 
-- `.nvmrc` -- Will tell other uses of the project which version of Node is used
-- `.npmrc` - WIll tell other users of the project which package manager is used
+- `.nvmrc` - Will tell other uses of the project which version of Node is used
+- `.npmrc` - Will tell other users of the project which package manager is used
 
 We are using `Node v16 Gallium` and `yarn` for this project so we set those values like so:
 
@@ -60,7 +60,7 @@ Note that the use of `engine-strict` didn't specifically say anything about `yar
 ```json
   "name": "nextjs-fullstack-app-template",
   "author": "Alex Eagleson",
-  "description": "A tutorial and template for creating a production-ready fullstack NextJs application",
+  "description": "A tutorial and template for creating a production-ready fullstack Next.js application",
   "version": "0.1.0",
   "private": true,
   "license" : "MIT"
@@ -79,7 +79,7 @@ The `engines` field is where you specify the specific versions of the tools you 
 
 This would be a good time to make our first commit to our remote repo, to make sure our changes are backed up, and to follow best practices for keeping related changes grouped within a single commit before moving to something new.
 
-By default your NextJs project will already have a repo initialized. You can check what branch you are on with `git status`. It should say something like:
+By default your Next.js project will already have a repo initialized. You can check what branch you are on with `git status`. It should say something like:
 
 ```
 On branch main
@@ -137,7 +137,7 @@ In order to set a standard that will be used by all contributors to the project 
 
 ### ESLint
 
-We'll begin with ESLint, which is easy because it automatically comes installed and pre-configured with NextJs projects.
+We'll begin with ESLint, which is easy because it automatically comes installed and pre-configured with Next.js projects.
 
 We are just going to add a little bit of extra configuration and make it a bit stricter than it is by default. If you disagree with any of the rules it sets, no need to worry, it's very easy to disable any of them manually. We configure everything in `.eslintrc.json` which should already exist in your root directory:
 
@@ -376,7 +376,7 @@ I personally like to take a fairly simplistic approach, keep things separated ba
 
 - `component` - The individual UI components that make up the app will live in here
 - `lib` - Business/app/domain logic will live in here.
-- `pages` - Will be the actual routes/pages as per the required NextJs structure.  
+- `pages` - Will be the actual routes/pages as per the required Next.js structure.  
 
 We will have other folders in addition to this to support the project, but the core of almost everything that makes up the unique app that we are building will be housed in these three directories.
 
@@ -486,7 +486,7 @@ module.exports = {
 
 Here we have changed the pattern for stories files so that it will pick up any `.stories` files inside our components (or other) directories.  
 
-We have also exposed NextJs's "public" folder as a static directory so we can test things like images, media, etc in Storybook.
+We have also exposed Next.js's "public" folder as a static directory so we can test things like images, media, etc in Storybook.
 
 Lastly, before we run Storybook itself, let's add some helpful values in `storybook/preview.js`.  This is the file where we can control the defaults for how our stories render.
 
@@ -587,7 +587,7 @@ When you begin working with the stories and mock props etc it will become quickl
 
 This goes back to the **consistency is everything** point we made earlier.  
 
-Next I am going to make a style module file that lives next to the component.  By default NextJs gives you a `/styles` directory which I personally do not use, but if you prefer to keep all your styles in the same place that's a fine choice.  I just prefer to keep them with the components.
+Next I am going to make a style module file that lives next to the component.  By default Next.js gives you a `/styles` directory which I personally do not use, but if you prefer to keep all your styles in the same place that's a fine choice.  I just prefer to keep them with the components.
 
 `BaseTemplate.module.css`
 ```css
@@ -629,7 +629,7 @@ const BaseTemplate: React.FC<IBaseTemplate> = ({ sampleTextProp }) => {
 export default BaseTemplate;
 ```
 
-With each component we create we're going to want a very quick and easy way to test it in different environments (Storybook for examaple, but also the app, and maybe our unit tests).  It will be handy to have quick access to data to render the component.  
+With each component we create we're going to want a very quick and easy way to test it in different environments (Storybook for example, but also the app, and maybe our unit tests).  It will be handy to have quick access to data to render the component.  
 
 Let's create a file to store some mock data for this component to use for testing:
 
@@ -932,16 +932,50 @@ yarn dev
 ![Final Masterpiece](https://res.cloudinary.com/dqse2txyi/image/upload/v1649137105/blogs/nextjs-fullstack-app-template/final-masterpiece_cbpxu1.png)
 
 
+## Deployment
+
+Our final step will be to show the process of deployment of a Next.js app.
+
+We will be using Vercel as it is the simplest and most straightforward deployment solution for a Next.js app (primarily due to the fact that Vercel owns Next and so one can always assume they will offer best in class support).
+
+Be aware Vercel is absolutely not the only option, other major services like [AWS](https://aws.amazon.com/blogs/mobile/host-a-next-js-ssr-app-with-real-time-data-on-aws-amplify/), [Netlify](https://www.netlify.com/with/nextjs/), etc all work as well if you choose to go that route.
+
+Ultimately you just need a service where you can run the `next start` command presuming you're not using an entirely [statically generated site](https://nextjs.org/docs/advanced-features/static-html-export) (in which case any static hosting tool would work and no custom Next server would be required).  
+
+Deploying on Vercel as a hobby user is completely free.  To begin we will [create an account on Vercel](https://vercel.com/).
+
+Once logged in, click `+ New Project` and give Vercel access to your Github repositories.  You can give global access, or you can select only the repository you want to deploy.  I am going to select this repository called `nextjs-fullstack-app-template`.
+
+Once you have selected it you'll need to configure it.  In the `Build and Output Settings` section make sure you replace the default NPM commands with your yarn commands (unless you are using NPM).
+
+![Next Configure](https://res.cloudinary.com/dqse2txyi/image/upload/v1649164443/blogs/nextjs-fullstack-app-template/next-configure_dtywld.png)
+
+We have not used any environment variables yet so no need to add any.
+
+Once that's it just click `Deploy` and you're done!  It's that easy.  
+
+![Successful Deploy](https://res.cloudinary.com/dqse2txyi/image/upload/v1649164722/blogs/nextjs-fullstack-app-template/successful-depoy_pyg2ry.png)
+
+Not only is your site deployed now, it will continue to get re-deployed automatically every time you commit to your primary branch.  If you don't want this behavior, then it's easy to configure in the Vercel dashboard.  
+
+The nice thing is that you already configured your `yarn build` command to ensure a working production build before you can push you code, so you can push with confidence in presuming your deployment will be successful.  
+
+The only thing you need to keep in mind are the differences between your two environments.  It's still possible for your build to succeed locally but fail on Vercel if for example your scripts are different (using NPM instead of yarn or vice versa) or more commonly if you are missing environment variables.  
+
+We will be adding `env` values in future tutorials so you will need to make sure those values are configured in both your local and production environment, since they are secrets and should never be committed to a public (or even private if can be avoided) repository.  
+
 ## Conclusion
 
-I hope you found this tutorial and learned something about setting up a solid and scaleable NextJs project for you and your team.
+I hope you found this tutorial and learned something about setting up a solid and scaleable Next.js project for you and your team.
 
-This is the first part of a mutli-part series on creating a production quality NextJs app template.  IN coming installments we will also look at:
+This is the first part of a multi-part series on creating a production quality Next.js app template.  In coming installments we will also look at:
+
 
 - An example app with multiple components, API routes, `getStaticProps` and `getServerSide` Props
 - Unit testing and end to end testing
 - Database connection with Prisma and your choice of DB adapter (we'll use Supabase and Postgres)
 - Authentication and SSO with next-auth
 - Internationalization with i18next and i18Nexus
+- Steps involved to transform into a monorepo with multiple apps and shared packages
 
-Stay tuned and please don't hesitate to ask any questions, I'm happy to answer if I can.
+Stay tuned and please don't hesitate to ask any questions, I'm happy to answer if I can!
