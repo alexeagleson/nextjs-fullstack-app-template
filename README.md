@@ -464,8 +464,7 @@ yarn install
 
 To ensure webpack5 is installed.
 
-
-Lastly, just before we run Storybook itself, we have to update the `.storybook/main.js` file:
+Next we have to update the `.storybook/main.js` file:
 
 `storybook/main.js`
 ```js
@@ -488,6 +487,63 @@ module.exports = {
 Here we have changed the pattern for stories files so that it will pick up any `.stories` files inside our components (or other) directories.  
 
 We have also exposed NextJs's "public" folder as a static directory so we can test things like images, media, etc in Storybook.
+
+Lastly, before we run Storybook itself, let's add some helpful values in `storybook/preview.js`.  This is the file where we can control the defaults for how our stories render.
+
+`storybook/preview.js`
+```js
+import { Suspense } from 'react';
+import '../styles/globals.css';
+import * as NextImage from 'next/image';
+import { I18nextProvider } from 'react-i18next';
+import i18n from './i18n';
+
+const BREAKPOINTS_INT = {
+  xs: 375,
+  sm: 600,
+  md: 900,
+  lg: 1200,
+  xl: 1536,
+};
+
+const customViewports = Object.fromEntries(
+  Object.entries(BREAKPOINTS_INT).map(([key, val], idx) => {
+    console.log(val);
+    return [
+      key,
+      {
+        name: key,
+        styles: {
+          width: `${val}px`,
+          height: `${(idx + 5) * 10}vh`,
+        },
+      },
+    ];
+  })
+);
+
+// Allow Storybook to handle Next's <Image> component
+const OriginalNextImage = NextImage.default;
+
+Object.defineProperty(NextImage, 'default', {
+  configurable: true,
+  value: (props) => <OriginalNextImage {...props} unoptimized />,
+});
+
+
+export const parameters = {
+  actions: { argTypesRegex: '^on[A-Z].*' },
+  controls: {
+    matchers: {
+      color: /(background|color)$/i,
+      date: /Date$/,
+    },
+  },
+  viewport: { viewports: customViewports },
+};
+```
+
+There are a few personal preferences in the above, but you can configure it how you want.  Be sure to set the default breakpoints to match whatever is important to you in your app.  We are also adding a handler so that Storybook can handle Next's `<Image>` component without crashing.
 
 Now we are ready to test it.  Run:
 
@@ -637,4 +693,8 @@ If all goes well you will be greeted by your fine looking base component (if not
 
 ![Storybook Base Template](https://res.cloudinary.com/dqse2txyi/image/upload/v1649133832/blogs/nextjs-fullstack-app-template/storybook-base-template_uwna7h.png)
 
-Now I will make a commit with message `build: create BaseTemplate component`
+Now that we're starting to create more files it's good to get into the habit of running `yarn lint` before doing your commits to make sure everything is clean and ready to go.  I'm going to make a commit with message `build: create BaseTemplate component`.
+
+## Creating a Real Component
+
+Since we have our template, let's go through the process of using it to create a real component.
