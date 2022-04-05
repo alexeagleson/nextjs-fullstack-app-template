@@ -1,19 +1,24 @@
 {
-    "cSpell.words": [
-        "codenames",
-        "commitlint",
-        "Eagleson",
-        "Etyo",
-        "nextjs",
-        "npmrc",
-        "prettierignore",
-        "prettierrc",
-        "rgba",
-        "scaleable",
-        "Supabase",
-        "typeof",
-        "unoptimized",
-        "Vercel",
-        "Viewports"
-    ]
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.organizeImports": true
+  },
+  "cSpell.words": [
+    "codenames",
+    "commitlint",
+    "Eagleson",
+    "Etyo",
+    "nextjs",
+    "npmrc",
+    "prettierignore",
+    "prettierrc",
+    "rgba",
+    "scaleable",
+    "Supabase",
+    "typeof",
+    "unoptimized",
+    "Vercel",
+    "Viewports"
+  ]
 }

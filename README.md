@@ -213,7 +213,6 @@ Those values are entirely at your discretion as to what is best for your team an
 `.prettierignore`
 ```
 .yarn
-.vscode
 .next
 dist
 node_modules
@@ -363,6 +362,34 @@ I'm going to create a new commit now with the message `ci: implement commitlint`
 You can see the result of the complete culmination of this setup in the screenshot below, hopefully yours looks similar:
 
 ![Dev Experience](https://res.cloudinary.com/dqse2txyi/image/upload/v1649129725/blogs/nextjs-fullstack-app-template/dev-experience_wznie9.png)
+
+
+## VS Code Configuration
+
+Now that we have implemented ESLint and Prettier we can take advantage of some convenient VS Code functionality to have them be run automatically.
+
+Create a directory in the root of your project called `.vscode` and inside a file called `settings.json`.  This will be a list of values that override the default settings of your installed VS Code.  
+
+The reason we want to place them in a folder for the project is that we can set specific settings that only apply to this project, and we can share them with the rest of our team by including them in the code repository.
+
+Within `settings.json` we will add the following values:
+
+`.vscode/settings.json`
+```json
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.organizeImports": true
+  },
+}
+```
+
+The above will tell VS Code to use your Prettier extension as the default formatter (you can override manually if you wish with another one) and to automatically format your files and organize your import statements every time you save.  
+
+Very handy stuff and just another thing you no longer need to think about so you can focus on the important things like solving business problems.  
+
+I'll now make a commit with message `build: implement vscode project settings`.
 
 ## Setting up Directory Structure
 

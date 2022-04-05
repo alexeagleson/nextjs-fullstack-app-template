@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { ComponentMeta, ComponentStory } from '@storybook/react';
 import CatCard, { ICatCard } from './CatCard';
 import { mockCatCardProps } from './CatCard.mocks';
 
