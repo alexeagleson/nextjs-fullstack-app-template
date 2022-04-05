@@ -20,6 +20,16 @@ You should see the demo app available on [http://localhost:3000](http://localhos
 
 ![First Page Load](https://res.cloudinary.com/dqse2txyi/image/upload/v1649125549/blogs/nextjs-fullstack-app-template/first-load_sm29jf.png)
 
+Also recommended to run
+
+```
+yarn build
+```
+
+To ensure you can successfully do a production build of the project. It's recommended (but not required) to close your dev server when running a NextJs build. Most of the time there is no issue but occasionally the build can put your dev server in a weird state that requires a restart.
+
+You should get a nice little report on the command line of all the pages built with green coloured text implying they are small and efficient. We'll try to keep them that way as we develop the project.
+
 ## Engine Locking
 
 We would like for all developers working on this project to use the same Node engine and package manager we are using. TO do that we create two new files:
@@ -112,12 +122,20 @@ git remote add origin git@github.com:{YOUR_GITHUB_USERNAME}/{YOUR_REPOSITORY_NAM
 git push -u origin {YOUR_BRANCH_NAME}
 ```
 
+Note that from this point on we will be using the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) standard and specifically the Angular convention [described here](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#type)
+
+The reason being like many other features in this project to simply set a **consistent** standard for all developers to use to minimize train-up time when contributing to the project. I personally have very little concern as to what standard is chosen, as long as everyone agrees to follow it that is the most important thing.
+
+Consistency is everything!
+
 ## Code Formatting and Quality Tools
 
 In order to set a standard that will be used by all contributors to the project to keep the code style consistent and basic best practices followed we will be implementing two tools:
 
 - [eslint](https://eslint.org/) - For best practices on coding standards
 - [prettier](https://prettier.io/) - For automatic formatting of code files
+
+### ESLint
 
 We'll begin with ESLint, which is easy because it automatically comes installed and pre-configured with NextJs projects.
 
@@ -136,3 +154,68 @@ We are just going to add a little bit of extra configuration and make it a bit s
   }
 }
 ```
+
+In the above small code example we have added a few additional defaults, we have said that `React` will always be defined even if we don't specifically import it, and I have added a personal custom rule that I like which allows you to prefix variables with an underscore \_ if you have declared them but not used them in the code.
+
+I find that scenario comes up often when you are working on a feature and want to prepare variables for use later, but have not yet reached the point of implementing them.
+
+You can test out your config by running:
+
+```
+yarn lint
+```
+
+You should get a message like:
+
+```
+✔ No ESLint warnings or errors
+Done in 1.47s.
+```
+
+If you get any errors then ESLint is quite good at explaining clearly what they are. If you encounter a rule you don't like you can disable it in "rules" by simply setting it to 1 (warning) or 0 (ignore) like so:
+
+```json
+  "rules": {
+    "no-unused-vars": 0, // As example: Will never bug you about unused variables again
+  }
+```
+
+Let's make a commit at this point with the message `build: configure eslint`
+
+### Prettier
+
+Prettier will take care of automatically formatting our files for us. Let's add it to the project now.
+
+It's only needed during development, so I'll add it as a `devDependency` with `-D`
+
+```
+yarn add -D prettier
+```
+
+I also recommend you get the [Prettier VS Code extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) so that VS Code can handle the formatting of the files for you and you don't need to rely on the command line tool. Having it installed and configured in your project means that VSCode will use your project's settings, so it's still necessary to add it here.
+
+We'll create two files in the root:
+
+`.prettierrc`
+```.prettierrc
+{
+  "trailingComma": "es5",
+  "tabWidth": 2,
+  "semi": true,
+  "singleQuote": true
+}
+```
+
+Those values are entirely at your discretion as to what is best for your team and project.
+
+`.prettierignore`
+```
+.yarn
+.vscode
+.next
+dist
+node_modules
+*.md
+```
+
+In that file I've placed a list of directories that I don't want Prettier to waste any resources working on.  You can also use patterns like *.html to ignore groups of types of files if you choose.
