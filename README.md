@@ -444,7 +444,6 @@ I have added `// New` to mark the two new sections and lines that are Storybook 
 
 You'll notice that Storybook has also added as `/stories` directory to the root of your project with a number of examples in.  If you are new to Storybook I highly recommend you look through them and leave them there until you are comfortable creating your own without the templates.  
 
-
 Before we run it we need to make sure we are using webpack5.  Add the following to your `package.json` file:
 
 `package.json`
@@ -463,7 +462,34 @@ Then run
 yarn install
 ```
 
-To ensure webpack5 is installed, and finally to run Storybook we run:
+To ensure webpack5 is installed.
+
+
+Lastly, just before we run Storybook itself, we have to update the `.storybook/main.js` file:
+
+`storybook/main.js`
+```js
+module.exports = {
+  stories: ['../**/*.stories.mdx', '../**/*.stories.@(js|jsx|ts|tsx)'],
+  /** Expose public folder to storybook as static */
+  staticDirs: ['../public'],
+  addons: [
+    '@storybook/addon-links',
+    '@storybook/addon-essentials',
+    '@storybook/addon-interactions',
+  ],
+  framework: '@storybook/react',
+  core: {
+    builder: '@storybook/builder-webpack5',
+  },
+};
+```
+
+Here we have changed the pattern for stories files so that it will pick up any `.stories` files inside our components (or other) directories.  
+
+We have also exposed NextJs's "public" folder as a static directory so we can test things like images, media, etc in Storybook.
+
+Now we are ready to test it.  Run:
 
 ```
 yarn storybook
@@ -476,3 +502,139 @@ If all goes well you'll see a message in your console that looks like:
 And you'll be able to access it on [http://localhost:6006](http://localhost:6006)
 
 ![Storybook Main](https://res.cloudinary.com/dqse2txyi/image/upload/v1649131644/blogs/nextjs-fullstack-app-template/storybook-main_yktgqh.png)
+
+I would encourage you to play around and get familiar with the examples if you've never used it before.  
+
+At this stage I'll be making a commit with message `build: implement storybook`.
+
+## Creating Our Component Template
+
+It's time to bring together all the configuration we have done and look at how we might create and implement our first component using the standards we have set for ourselves.  
+
+We'll just create a simple card.  Create the following directory structure:
+
+`/components/templates/base`
+
+And inside that directory we'll create `BaseTemplate.tsx`.  This will follow a standard pattern of filename matching the directories leading up to it.  This allows us for example to have other types of cards in the `cards` directory like `PhotoCard` or `TextCard` etc.
+
+`BaseTemplate.tsx`
+```tsx
+export interface IBaseTemplate {}
+
+const BaseTemplate: React.FC<IBaseTemplate> = () => {
+  return <div>Hello world!</div>;
+};
+
+export default BaseTemplate;
+```
+
+Every single one of our components is going to follow this exact structure.  Even if it does not use props it will still export an empty props interface for the component.  The reason for this is it will allow us to replicate this exact structure across many components and files, and interchange components/imports using the same expected pattern and just find/replace the names of the components.  
+
+When you begin working with the stories and mock props etc it will become quickly apparent how convenient and powerful it is to maintain a consistent naming scheme and interface for all your component files.
+
+This goes back to the **consistency is everything** point we made earlier.  
+
+Next I am going to make a style module file that lives next to the component.  By default NextJs gives you a `/styles` directory which I personally do not use, but if you prefer to keep all your styles in the same place that's a fine choice.  I just prefer to keep them with the components.
+
+`BaseTemplate.module.css`
+```css
+.component {
+}
+```
+
+As a standard empty template for where your top level styles will go on your component.  You can update your `BaseTemplate` as follows:
+
+`BaseTemplate.tsx`
+```tsx
+import styles from './BaseTemplate.module.css';
+
+export interface IBaseTemplate {}
+
+const BaseTemplate: React.FC<IBaseTemplate> = () => {
+  return <div className={styles.container}>Hello world!</div>;
+};
+
+export default BaseTemplate;
+```
+
+Now we have a clean template for our styling.
+
+Let's add an example prop to our template so we can handle the standard we'll be using for components props:
+
+`BaseTemplate.tsx`
+```tsx
+import styles from './BaseTemplate.module.css';
+
+export interface IBaseTemplate {
+  sampleTextProp: string;
+}
+
+const BaseTemplate: React.FC<IBaseTemplate> = ({ sampleTextProp }) => {
+  return <div className={styles.container}>{sampleTextProp}</div>;
+};
+
+export default BaseTemplate;
+```
+
+With each component we create we're going to want a very quick and easy way to test it in different environments (Storybook for examaple, but also the app, and maybe our unit tests).  It will be handy to have quick access to data to render the component.  
+
+Let's create a file to store some mock data for this component to use for testing:
+
+`BaseTemplate.mocks.ts`
+```ts
+import { IBaseTemplate } from './BaseTemplate';
+
+const base: IBaseTemplate = {
+  sampleTextProp: 'Hello world!',
+};
+
+export const mockBaseTemplateProps = {
+  base,
+};
+```
+
+This structure may seem a bit convoluted, but we'll see the benefits soon.  I am using very intentional consistent naming patterns so this template is very easy to copy and paste to each new component you create.
+
+Now let's create a  create a story for this component:
+
+`BaseTemplate.stories.tsx`
+```tsx
+import { ComponentStory, ComponentMeta } from '@storybook/react';
+import BaseTemplate, { IBaseTemplate } from './BaseTemplate';
+import { mockBaseTemplateProps } from './BaseTemplate.mocks';
+
+export default {
+  title: 'templates/base',
+  component: BaseTemplate,
+  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
+  argTypes: {},
+} as ComponentMeta<typeof BaseTemplate>;
+
+// More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
+const Template: ComponentStory<typeof BaseTemplate> = (args) => (
+  <BaseTemplate {...args} />
+);
+
+export const Base = Template.bind({});
+// More on args: https://storybook.js.org/docs/react/writing-stories/args
+
+Base.args = {
+  ...mockBaseTemplateProps.base,
+} as IBaseTemplate;
+```
+
+I'm not going to get into all the details of what each different part of a `stories` file entails, for that your best resource is the official Storybook documentation.
+
+The goal here is to create a consistent easily copy/paste-able pattern of component building and testing.  
+
+Let's try this one out.  Run:
+
+```
+yarn storybook
+```
+
+If all goes well you will be greeted by your fine looking base component (if not I encourage you to revisit the previous section and check if you missed any of the configurations).
+
+![Storybook Base Template](https://res.cloudinary.com/dqse2txyi/image/upload/v1649133832/blogs/nextjs-fullstack-app-template/storybook-base-template_uwna7h.png)
+
+Now I will make a commit with message `build: create BaseTemplate component`
