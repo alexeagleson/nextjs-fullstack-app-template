@@ -2,6 +2,8 @@ import type { NextPage } from 'next';
 import { signOut, useSession } from 'next-auth/react';
 import Head from 'next/head';
 import Link from 'next/link';
+import CatCard from '../components/cards/cat/CatCard';
+import { mockCatCardProps } from '../components/cards/cat/CatCard.mocks';
 import styles from '../styles/Home.module.css';
 
 const Home: NextPage = () => {
@@ -30,6 +32,7 @@ const Home: NextPage = () => {
             <a>Sign in</a>
           </Link>
         )}
+        <CatCard {...mockCatCardProps.base} />
       </main>
     </div>
   );

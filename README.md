@@ -1035,7 +1035,6 @@ const Home: NextPage = () => {
 export default Home;
 ```
 
-
 Let's take a look at the final masterpiece with:
 
 ```
@@ -1044,7 +1043,45 @@ yarn dev
 
 ![Final Masterpiece](https://res.cloudinary.com/dqse2txyi/image/upload/v1649137105/blogs/nextjs-fullstack-app-template/final-masterpiece_cbpxu1.png)
 
+## Add a Custom _document
 
+Though it is not necessary at this stage you will likely want to have more fine grained control over what is in the `<head>` of your app.  Creating a custom `_document.tsx` in your `pages` directory allows you to do that.  Create that file now.
+
+`pages/_document.tsx`
+```tsx
+import Document, { Head, Html, Main, NextScript } from 'next/document';
+
+class MyDocument extends Document {
+  render() {
+    return (
+      <Html>
+        <Head>
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap"
+            rel="stylesheet"
+          />
+        </Head>
+        <body>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    );
+  }
+}
+
+export default MyDocument;
+```
+
+_Note that I have removed the `@import` URL font from `components/cards/cat/CatCard.module.css` and placed that Google font here in the head to preload._
+
+Anything else you need to do or customize in your `<head>` element can now be done in this file.  
+
+Be aware that this `<Head>` is not the same as the one imported from `next/head`.  The ywill both work together and this one is used solely for data you would like loaded on every single page.
+
+For more info on how to use a custom `_document` see the [documentation](https://nextjs.org/docs/advanced-features/custom-document).
 ## Deployment
 
 Our final step will be to show the process of deployment of a Next.js app.
