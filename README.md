@@ -75,7 +75,7 @@ Note that the use of `engine-strict` didn't specifically say anything about `yar
 
 The `engines` field is where you specify the specific versions of the tools you are using. You can also fill in your personal details if you choose.
 
-## First Commit
+## Git Setup
 
 This would be a good time to make our first commit to our remote repo, to make sure our changes are backed up, and to follow best practices for keeping related changes grouped within a single commit before moving to something new.
 
@@ -219,3 +219,61 @@ node_modules
 ```
 
 In that file I've placed a list of directories that I don't want Prettier to waste any resources working on.  You can also use patterns like *.html to ignore groups of types of files if you choose.
+
+Now we add a new script to `package.json` so we can run Prettier:
+
+`package.json`
+```
+  ...
+  "scripts: {
+    ...
+    "prettier": "prettier --write ."
+  }
+```
+
+You can now run
+
+```
+yarn prettier
+```
+
+to automatically format, fix and save all files in your project you haven't ignored.  By default my formatter updated about 5 files.  You can see them in your list of changed files in the source control tab on the left of VS Code.
+
+Let's make another commit with `build: implement prettier`.
+
+## Git Hooks
+
+One more section on configuration before we start getting into component development.  Remember you're going to want this project to be as rock solid as possible if you're going to be building on it in the long term, particularly with a team of other developers.  It's worth the time to get it right at the start.
+
+We are going to implement a tool called [Husky](https://typicode.github.io/husky/#/)
+
+Husky is a tool for running scripts at different stages of the git process, for example add, commit, push, etc.  We would like to be able to set certain conditions, and only allow things like commit and push to succeed if our code meets those conditions, presuming that it indicates our project is of acceptable quality.
+
+To install Husky run
+
+```
+yarn add -D husky
+
+npx husky install
+```
+
+The second command will create a `.husky` directory in your project.  This is where your hooks will live.  Make sure this directory is included in your code repo as it's intended for other developers as well, not just yourself.
+
+Add the following script to your `package.json` file:
+
+`package.json`
+```
+  ...
+  "scripts: {
+    ...
+    "prepare": "husky install"
+  }
+```
+
+This will ensure Husky gets installed automatically when other developers run the project.  
+
+To create a hook run
+
+```
+npx husky add .husky/pre-commit "yarn lint"
+```
