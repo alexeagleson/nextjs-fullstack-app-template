@@ -8,7 +8,9 @@
     "codenames",
     "commitlint",
     "Eagleson",
+    "esbenp",
     "Etyo",
+    "nextauth",
     "nextjs",
     "npmrc",
     "pravatar",
@@ -16,9 +18,11 @@
     "prettierrc",
     "rgba",
     "scaleable",
+    "signin",
     "Supabase",
     "typeof",
     "unoptimized",
+    "userinfo",
     "Vercel",
     "Viewports"
 ]
