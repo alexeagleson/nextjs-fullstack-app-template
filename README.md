@@ -37,12 +37,12 @@ We would like for all developers working on this project to use the same Node en
 - `.nvmrc` - Will tell other uses of the project which version of Node is used
 - `.npmrc` - Will tell other users of the project which package manager is used
 
-We are using `Node v16 Gallium` and `yarn` for this project so we set those values like so:
+We are using `Node v14 Fermium` and `yarn` for this project so we set those values like so:
 
 `.nvmrc`
 
 ```.nvmrc
-lts/gallium
+lts/fermium
 ```
 
 `.npmrc`
@@ -50,6 +50,8 @@ lts/gallium
 ```
 engine-strict=true
 ```
+
+The reason we are using v14 instead of v16 for Node is that later in the tutorial we will be deploying on Vercel which unfortunately still does not support Node 16.  Perhaps by the time you read this tutorial it might.  You can follow the progress [here](https://github.com/vercel/community/discussions/37).
 
 You can check your version of Node with `node --version` and make sure you are setting the correct one. A list of Node version codenames can be found [here](https://github.com/nodejs/Release/blob/main/CODENAMES.md)
 
@@ -66,7 +68,7 @@ Note that the use of `engine-strict` didn't specifically say anything about `yar
   "license" : "MIT"
   "homepage": "https://github.com/alexeagleson/nextjs-fullstack-app-template"
   "engines": {
-    "node": ">=16.0.0",
+    "node": ">=14.0.0",
     "yarn": ">=1.22.0",
     "npm": "please-use-yarn"
   },
