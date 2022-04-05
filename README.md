@@ -1607,6 +1607,33 @@ You can use the `useSession()` hook to check for auth, you can read and process 
 
 You can also add any number of additional auth [providers](https://next-auth.js.org/providers/), each one will have to be configured and secrets generated on those platforms, but they all follow the same basic process as Google. In fact most are even simpler.
 
+### Storybook
+
+For those using Storybook, you'll get a "not defined" error if you try to load up a component that uses the auth hooks.  That's because we haven't wrapped our stories in the auth provider.
+
+For this tutorial we are not going to worry about how to mock the actual authentication in Storybook, that's beyond the scope, but here's all you need to add to get your auth components back up and running in storybook in a default "logged out" state:
+
+`.storybook.preview.js`
+```jsx
+import { SessionProvider } from 'next-auth/react';
+
+...
+
+export const decorators = [
+  (Story) => (
+    <SessionProvider session={null}>
+      <Story />
+    </SessionProvider>
+  ),
+];
+
+export const parameters = {
+  ...
+};
+```
+
+Just add a `decorators` export with a null session provider and you'll be in business.
+
 ## Conclusion
 
 I hope you found this tutorial and learned something about setting up a solid and scaleable Next.js project for you and your team.
