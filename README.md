@@ -32,7 +32,7 @@ You should get a nice little report on the command line of all the pages built w
 
 ## Engine Locking
 
-We would like for all developers working on this project to use the same Node engine and package manager we are using. TO do that we create two new files:
+We would like for all developers working on this project to use the same Node engine and package manager we are using. To do that we create two new files:
 
 - `.nvmrc` - Will tell other uses of the project which version of Node is used
 - `.npmrc` - Will tell other users of the project which package manager is used
@@ -51,7 +51,7 @@ lts/fermium
 engine-strict=true
 ```
 
-The reason we are using v14 instead of v16 for Node is that later in the tutorial we will be deploying on Vercel which unfortunately still does not support Node 16.  Perhaps by the time you read this tutorial it might.  You can follow the progress [here](https://github.com/vercel/community/discussions/37).
+The reason we are using v14 instead of v16 for Node is that later in the tutorial we will be deploying on Vercel which unfortunately still does not support Node 16. Perhaps by the time you read this tutorial it might. You can follow the progress [here](https://github.com/vercel/community/discussions/37).
 
 You can check your version of Node with `node --version` and make sure you are setting the correct one. A list of Node version codenames can be found [here](https://github.com/nodejs/Release/blob/main/CODENAMES.md)
 
@@ -199,6 +199,7 @@ I also recommend you get the [Prettier VS Code extension](https://marketplace.vi
 We'll create two files in the root:
 
 `.prettierrc`
+
 ```.prettierrc
 {
   "trailingComma": "es5",
@@ -211,6 +212,7 @@ We'll create two files in the root:
 Those values are entirely at your discretion as to what is best for your team and project.
 
 `.prettierignore`
+
 ```
 .yarn
 .next
@@ -219,11 +221,12 @@ node_modules
 *.md
 ```
 
-In that file I've placed a list of directories that I don't want Prettier to waste any resources working on.  You can also use patterns like *.html to ignore groups of types of files if you choose.
+In that file I've placed a list of directories that I don't want Prettier to waste any resources working on. You can also use patterns like \*.html to ignore groups of types of files if you choose.
 
 Now we add a new script to `package.json` so we can run Prettier:
 
 `package.json`
+
 ```
   ...
   "scripts: {
@@ -238,17 +241,17 @@ You can now run
 yarn prettier
 ```
 
-to automatically format, fix and save all files in your project you haven't ignored.  By default my formatter updated about 5 files.  You can see them in your list of changed files in the source control tab on the left of VS Code.
+to automatically format, fix and save all files in your project you haven't ignored. By default my formatter updated about 5 files. You can see them in your list of changed files in the source control tab on the left of VS Code.
 
 Let's make another commit with `build: implement prettier`.
 
 ## Git Hooks
 
-One more section on configuration before we start getting into component development.  Remember you're going to want this project to be as rock solid as possible if you're going to be building on it in the long term, particularly with a team of other developers.  It's worth the time to get it right at the start.
+One more section on configuration before we start getting into component development. Remember you're going to want this project to be as rock solid as possible if you're going to be building on it in the long term, particularly with a team of other developers. It's worth the time to get it right at the start.
 
 We are going to implement a tool called [Husky](https://typicode.github.io/husky/#/)
 
-Husky is a tool for running scripts at different stages of the git process, for example add, commit, push, etc.  We would like to be able to set certain conditions, and only allow things like commit and push to succeed if our code meets those conditions, presuming that it indicates our project is of acceptable quality.
+Husky is a tool for running scripts at different stages of the git process, for example add, commit, push, etc. We would like to be able to set certain conditions, and only allow things like commit and push to succeed if our code meets those conditions, presuming that it indicates our project is of acceptable quality.
 
 To install Husky run
 
@@ -258,11 +261,12 @@ yarn add -D husky
 npx husky install
 ```
 
-The second command will create a `.husky` directory in your project.  This is where your hooks will live.  Make sure this directory is included in your code repo as it's intended for other developers as well, not just yourself.
+The second command will create a `.husky` directory in your project. This is where your hooks will live. Make sure this directory is included in your code repo as it's intended for other developers as well, not just yourself.
 
 Add the following script to your `package.json` file:
 
 `package.json`
+
 ```
   ...
   "scripts: {
@@ -271,7 +275,7 @@ Add the following script to your `package.json` file:
   }
 ```
 
-This will ensure Husky gets installed automatically when other developers run the project.  
+This will ensure Husky gets installed automatically when other developers run the project.
 
 To create a hook run
 
@@ -279,9 +283,9 @@ To create a hook run
 npx husky add .husky/pre-commit "yarn lint"
 ```
 
-The above says that in order for our commit to succeed, the `yarn lint` script must first run and succeed.  "Succeed" in this context means no errors.  It will allow you to have warnings (remember in the ESLint config a setting of 1 is a warning and 2 is an error in case you want to adjust settings).
+The above says that in order for our commit to succeed, the `yarn lint` script must first run and succeed. "Succeed" in this context means no errors. It will allow you to have warnings (remember in the ESLint config a setting of 1 is a warning and 2 is an error in case you want to adjust settings).
 
-Let's create a new commit with the message `ci: implement husky`.  If all has been setup properly your lint script should run before the commit is allowed to occur.
+Let's create a new commit with the message `ci: implement husky`. If all has been setup properly your lint script should run before the commit is allowed to occur.
 
 We're going to add another one:
 
@@ -289,11 +293,11 @@ We're going to add another one:
 npx husky add .husky/pre-push "yarn build"
 ```
 
-The above ensures that we are not allowed to push to the remote repository unless our code can successfully build.  That seems like a pretty reasonable condition doesn't it?  Feel free to test it by committing this change and trying to push.
+The above ensures that we are not allowed to push to the remote repository unless our code can successfully build. That seems like a pretty reasonable condition doesn't it? Feel free to test it by committing this change and trying to push.
 
 ---
 
-Lastly we are going to add one more tool.  We have been following a standard convention for all our commit messages so far, let's ensure that everyone on the team is following them as well (including ourselves!).  We can add a linter for our commit messages:
+Lastly we are going to add one more tool. We have been following a standard convention for all our commit messages so far, let's ensure that everyone on the team is following them as well (including ourselves!). We can add a linter for our commit messages:
 
 ```
 yarn add -D @commitlint/config-conventional @commitlint/cli
@@ -302,6 +306,7 @@ yarn add -D @commitlint/config-conventional @commitlint/cli
 To configure it we will be using a set of standard defaults, but I like to include that list explicitly in a `commitlint.config.js` file since I sometimes forget what prefixes are available:
 
 `commitlint.config.js`
+
 ```js
 // build: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)
 // ci: Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)
@@ -355,7 +360,7 @@ module.exports = {
 };
 ```
 
-Feel free to try some commits that *don't* follow the rules and see how they are not accepted, and you receive feedback that is designed to help you correct them.
+Feel free to try some commits that _don't_ follow the rules and see how they are not accepted, and you receive feedback that is designed to help you correct them.
 
 I'm going to create a new commit now with the message `ci: implement commitlint`.
 
@@ -363,41 +368,42 @@ You can see the result of the complete culmination of this setup in the screensh
 
 ![Dev Experience](https://res.cloudinary.com/dqse2txyi/image/upload/v1649129725/blogs/nextjs-fullstack-app-template/dev-experience_wznie9.png)
 
-
 ## VS Code Configuration
 
 Now that we have implemented ESLint and Prettier we can take advantage of some convenient VS Code functionality to have them be run automatically.
 
-Create a directory in the root of your project called `.vscode` and inside a file called `settings.json`.  This will be a list of values that override the default settings of your installed VS Code.  
+Create a directory in the root of your project called `.vscode` and inside a file called `settings.json`. This will be a list of values that override the default settings of your installed VS Code.
 
 The reason we want to place them in a folder for the project is that we can set specific settings that only apply to this project, and we can share them with the rest of our team by including them in the code repository.
 
 Within `settings.json` we will add the following values:
 
 `.vscode/settings.json`
+
 ```json
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
     "source.fixAll": true,
     "source.organizeImports": true
-  },
+  }
 }
 ```
 
-The above will tell VS Code to use your Prettier extension as the default formatter (you can override manually if you wish with another one) and to automatically format your files and organize your import statements every time you save.  
+The above will tell VS Code to use your Prettier extension as the default formatter (you can override manually if you wish with another one) and to automatically format your files and organize your import statements every time you save.
 
-Very handy stuff and just another thing you no longer need to think about so you can focus on the important things like solving business problems.  
+Very handy stuff and just another thing you no longer need to think about so you can focus on the important things like solving business problems.
 
 I'll now make a commit with message `build: implement vscode project settings`.
 
 ## Debugging
 
-Let's set up a convenient environment for debugging our application in case we run into any issues during development.  
+Let's set up a convenient environment for debugging our application in case we run into any issues during development.
 
 Inside of your `.vscode` directory create a `launch.json` file:
 
 `launch.json`
+
 ```json
 {
   "version": "0.1.0",
@@ -430,13 +436,13 @@ Inside of your `.vscode` directory create a `launch.json` file:
 }
 ```
 
-With that script in place you have three choices for debugging.  CLick the little "bug & play icon" on the left of VS Code or press `Ctrl + Shift + D` to access the debugging menu.  You can select which script you want to run and start/stop it with the start/stop buttons.
+With that script in place you have three choices for debugging. CLick the little "bug & play icon" on the left of VS Code or press `Ctrl + Shift + D` to access the debugging menu. You can select which script you want to run and start/stop it with the start/stop buttons.
 
 ![VS Code Debugger](https://res.cloudinary.com/dqse2txyi/image/upload/v1649168143/blogs/nextjs-fullstack-app-template/vscode-debugger_x1puqk.png)
 
 In addition to this, or if you are not using VS Code, we can also set up some helpful debugging scripts in your project.
 
-First we will install the [cross-env](https://www.npmjs.com/package/cross-env) which will; be necessary to set environment variables if you have teammates working on different environments (Windows, Linux, Mac, etc).  
+First we will install the [cross-env](https://www.npmjs.com/package/cross-env) which will; be necessary to set environment variables if you have teammates working on different environments (Windows, Linux, Mac, etc).
 
 ```
 yarn add -D cross-env
@@ -445,6 +451,7 @@ yarn add -D cross-env
 With that package installed we can update our `package.json` `dev` script to look like the following:
 
 `package.json`
+
 ```json
 {
   ...
@@ -461,9 +468,9 @@ At this stage I'll be making a new commit with message `build: add debugging con
 
 ## Setting up Directory Structure
 
-This section is now going to cover setting up the folder structure in our project.  This is one of those topics that many people will have *extremely strong opinions about*, and for good reason!  Directory structure can really make or break a project in the long term when it gets out of control, especially when fellow team members have to spend unnecessary time trying to guess where to put things (or find things).
+This section is now going to cover setting up the folder structure in our project. This is one of those topics that many people will have _extremely strong opinions about_, and for good reason! Directory structure can really make or break a project in the long term when it gets out of control, especially when fellow team members have to spend unnecessary time trying to guess where to put things (or find things).
 
-I personally like to take a fairly simplistic approach, keep things separated basically in a class model/view style.  We will be using three primary folders:
+I personally like to take a fairly simplistic approach, keep things separated basically in a class model/view style. We will be using three primary folders:
 
 ```
 /components
@@ -473,17 +480,17 @@ I personally like to take a fairly simplistic approach, keep things separated ba
 
 - `component` - The individual UI components that make up the app will live in here
 - `lib` - Business/app/domain logic will live in here.
-- `pages` - Will be the actual routes/pages as per the required Next.js structure.  
+- `pages` - Will be the actual routes/pages as per the required Next.js structure.
 
 We will have other folders in addition to this to support the project, but the core of almost everything that makes up the unique app that we are building will be housed in these three directories.
 
-Within `components` we will have subdirectories that kind of group similar types of components together.  You can use any method you prefer to do this.  I have used the MUI library quite a bit in my time, so I tend to follow the same organization they use for components in [their documentation](https://mui.com/getting-started/installation/)
+Within `components` we will have subdirectories that kind of group similar types of components together. You can use any method you prefer to do this. I have used the MUI library quite a bit in my time, so I tend to follow the same organization they use for components in [their documentation](https://mui.com/getting-started/installation/)
 
-For example inputs, surfaces, navigation, utils, layout etc.  
+For example inputs, surfaces, navigation, utils, layout etc.
 
-You don't need to create these directories in advance and leave them empty.  I would just create them as you go while building your components.  
+You don't need to create these directories in advance and leave them empty. I would just create them as you go while building your components.
 
-This section is simply designed to explain how I will be setting up this project, there are many other ways you might choose to organize yours and I would encourage you to choose whatever works best for you and your team.  
+This section is simply designed to explain how I will be setting up this project, there are many other ways you might choose to organize yours and I would encourage you to choose whatever works best for you and your team.
 
 At this point I will be making a commit with message `rfc: create directory structure`
 
@@ -491,9 +498,9 @@ At this point I will be making a commit with message `rfc: create directory stru
 
 One of the great modern tools available to us if you aren't already familiar with it is called [Storybook](https://storybook.js.org/).
 
-Storybook gives us an environment to show off and test the React components we are building outside of the application we are using them in.  It's  great tool to connect developers with designers and be able to verify components we have developed look and function as per design requirements in an isolated environment without the overhead of the rest of the app.
+Storybook gives us an environment to show off and test the React components we are building outside of the application we are using them in. It's great tool to connect developers with designers and be able to verify components we have developed look and function as per design requirements in an isolated environment without the overhead of the rest of the app.
 
-Note that Storybook is meant as a visual testing tool, we will be implementing other tools later for functional unit testing and end-to-end testing.  
+Note that Storybook is meant as a visual testing tool, we will be implementing other tools later for functional unit testing and end-to-end testing.
 
 The best way to learn how to use Storybook is installing it and trying it out!
 
@@ -501,15 +508,16 @@ The best way to learn how to use Storybook is installing it and trying it out!
 npx sb init --builder webpack5
 ```
 
-We'll be using the webpack5 version to stay up to date with the latest version of webpack (I'm unsure why it is still not yet the default.  Maybe it will be by the time you are using this tutorial).
+We'll be using the webpack5 version to stay up to date with the latest version of webpack (I'm unsure why it is still not yet the default. Maybe it will be by the time you are using this tutorial).
 
-When Storybook installs it automatically detects a lot of things about your project, like how it is a React app, and other tools you are using.  It should take care fo all that configuration itself.  
+When Storybook installs it automatically detects a lot of things about your project, like how it is a React app, and other tools you are using. It should take care fo all that configuration itself.
 
-If you get a prompt about the eslintPlugin, you can say "yes".  We are going to configure it manually though, so no worries if you get a message saying it didn't auto-configure.
+If you get a prompt about the eslintPlugin, you can say "yes". We are going to configure it manually though, so no worries if you get a message saying it didn't auto-configure.
 
 Open up `.eslintrc.json` and update it to the following:
 
 `.eslintrc.json`
+
 ```json
 {
   "extends": [
@@ -519,7 +527,7 @@ Open up `.eslintrc.json` and update it to the following:
     "eslint:recommended"
   ],
   "globals": {
-    "React": "readonly",
+    "React": "readonly"
   },
   // New
   "overrides": [
@@ -537,13 +545,14 @@ Open up `.eslintrc.json` and update it to the following:
 }
 ```
 
-I have added `// New` to mark the two new sections and lines that are Storybook specific.  
+I have added `// New` to mark the two new sections and lines that are Storybook specific.
 
-You'll notice that Storybook has also added as `/stories` directory to the root of your project with a number of examples in.  If you are new to Storybook I highly recommend you look through them and leave them there until you are comfortable creating your own without the templates.  
+You'll notice that Storybook has also added as `/stories` directory to the root of your project with a number of examples in. If you are new to Storybook I highly recommend you look through them and leave them there until you are comfortable creating your own without the templates.
 
-Before we run it we need to make sure we are using webpack5.  Add the following to your `package.json` file:
+Before we run it we need to make sure we are using webpack5. Add the following to your `package.json` file:
 
 `package.json`
+
 ```json
 {
   ...
@@ -564,6 +573,7 @@ To ensure webpack5 is installed.
 Next we have to update the `.storybook/main.js` file:
 
 `storybook/main.js`
+
 ```js
 module.exports = {
   stories: ['../**/*.stories.mdx', '../**/*.stories.@(js|jsx|ts|tsx)'],
@@ -581,13 +591,14 @@ module.exports = {
 };
 ```
 
-Here we have changed the pattern for stories files so that it will pick up any `.stories` files inside our components (or other) directories.  
+Here we have changed the pattern for stories files so that it will pick up any `.stories` files inside our components (or other) directories.
 
 We have also exposed Next.js's "public" folder as a static directory so we can test things like images, media, etc in Storybook.
 
-Lastly, before we run Storybook itself, let's add some helpful values in `storybook/preview.js`.  This is the file where we can control the defaults for how our stories render.
+Lastly, before we run Storybook itself, let's add some helpful values in `storybook/preview.js`. This is the file where we can control the defaults for how our stories render.
 
 `storybook/preview.js`
+
 ```js
 import '../styles/globals.css';
 import * as NextImage from 'next/image';
@@ -624,7 +635,6 @@ Object.defineProperty(NextImage, 'default', {
   value: (props) => <OriginalNextImage {...props} unoptimized />,
 });
 
-
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
   controls: {
@@ -637,9 +647,9 @@ export const parameters = {
 };
 ```
 
-There are a few personal preferences in the above, but you can configure it how you want.  Be sure to set the default breakpoints to match whatever is important to you in your app.  We are also adding a handler so that Storybook can handle Next's `<Image>` component without crashing.
+There are a few personal preferences in the above, but you can configure it how you want. Be sure to set the default breakpoints to match whatever is important to you in your app. We are also adding a handler so that Storybook can handle Next's `<Image>` component without crashing.
 
-Now we are ready to test it.  Run:
+Now we are ready to test it. Run:
 
 ```
 yarn storybook
@@ -653,21 +663,22 @@ And you'll be able to access it on [http://localhost:6006](http://localhost:6006
 
 ![Storybook Main](https://res.cloudinary.com/dqse2txyi/image/upload/v1649131644/blogs/nextjs-fullstack-app-template/storybook-main_yktgqh.png)
 
-I would encourage you to play around and get familiar with the examples if you've never used it before.  
+I would encourage you to play around and get familiar with the examples if you've never used it before.
 
 At this stage I'll be making a commit with message `build: implement storybook`.
 
 ## Creating Our Component Template
 
-It's time to bring together all the configuration we have done and look at how we might create and implement our first component using the standards we have set for ourselves.  
+It's time to bring together all the configuration we have done and look at how we might create and implement our first component using the standards we have set for ourselves.
 
-We'll just create a simple card.  Create the following directory structure:
+We'll just create a simple card. Create the following directory structure:
 
 `/components/templates/base`
 
-And inside that directory we'll create `BaseTemplate.tsx`.  This will follow a standard pattern of filename matching the directories leading up to it.  This allows us for example to have other types of cards in the `cards` directory like `PhotoCard` or `TextCard` etc.
+And inside that directory we'll create `BaseTemplate.tsx`. This will follow a standard pattern of filename matching the directories leading up to it. This allows us for example to have other types of cards in the `cards` directory like `PhotoCard` or `TextCard` etc.
 
 `BaseTemplate.tsx`
+
 ```tsx
 export interface IBaseTemplate {}
 
@@ -678,23 +689,25 @@ const BaseTemplate: React.FC<IBaseTemplate> = () => {
 export default BaseTemplate;
 ```
 
-Every single one of our components is going to follow this exact structure.  Even if it does not use props it will still export an empty props interface for the component.  The reason for this is it will allow us to replicate this exact structure across many components and files, and interchange components/imports using the same expected pattern and just find/replace the names of the components.  
+Every single one of our components is going to follow this exact structure. Even if it does not use props it will still export an empty props interface for the component. The reason for this is it will allow us to replicate this exact structure across many components and files, and interchange components/imports using the same expected pattern and just find/replace the names of the components.
 
 When you begin working with the stories and mock props etc it will become quickly apparent how convenient and powerful it is to maintain a consistent naming scheme and interface for all your component files.
 
-This goes back to the **consistency is everything** point we made earlier.  
+This goes back to the **consistency is everything** point we made earlier.
 
-Next I am going to make a style module file that lives next to the component.  By default Next.js gives you a `/styles` directory which I personally do not use, but if you prefer to keep all your styles in the same place that's a fine choice.  I just prefer to keep them with the components.
+Next I am going to make a style module file that lives next to the component. By default Next.js gives you a `/styles` directory which I personally do not use, but if you prefer to keep all your styles in the same place that's a fine choice. I just prefer to keep them with the components.
 
 `BaseTemplate.module.css`
+
 ```css
 .component {
 }
 ```
 
-As a standard empty template for where your top level styles will go on your component.  You can update your `BaseTemplate` as follows:
+As a standard empty template for where your top level styles will go on your component. You can update your `BaseTemplate` as follows:
 
 `BaseTemplate.tsx`
+
 ```tsx
 import styles from './BaseTemplate.module.css';
 
@@ -712,6 +725,7 @@ Now we have a clean template for our styling.
 Let's add an example prop to our template so we can handle the standard we'll be using for components props:
 
 `BaseTemplate.tsx`
+
 ```tsx
 import styles from './BaseTemplate.module.css';
 
@@ -726,11 +740,12 @@ const BaseTemplate: React.FC<IBaseTemplate> = ({ sampleTextProp }) => {
 export default BaseTemplate;
 ```
 
-With each component we create we're going to want a very quick and easy way to test it in different environments (Storybook for example, but also the app, and maybe our unit tests).  It will be handy to have quick access to data to render the component.  
+With each component we create we're going to want a very quick and easy way to test it in different environments (Storybook for example, but also the app, and maybe our unit tests). It will be handy to have quick access to data to render the component.
 
 Let's create a file to store some mock data for this component to use for testing:
 
 `BaseTemplate.mocks.ts`
+
 ```ts
 import { IBaseTemplate } from './BaseTemplate';
 
@@ -743,11 +758,12 @@ export const mockBaseTemplateProps = {
 };
 ```
 
-This structure may seem a bit convoluted, but we'll see the benefits soon.  I am using very intentional consistent naming patterns so this template is very easy to copy and paste to each new component you create.
+This structure may seem a bit convoluted, but we'll see the benefits soon. I am using very intentional consistent naming patterns so this template is very easy to copy and paste to each new component you create.
 
-Now let's create a  create a story for this component:
+Now let's create a create a story for this component:
 
 `BaseTemplate.stories.tsx`
+
 ```tsx
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import BaseTemplate, { IBaseTemplate } from './BaseTemplate';
@@ -775,9 +791,9 @@ Base.args = {
 
 I'm not going to get into all the details of what each different part of a `stories` file entails, for that your best resource is the official Storybook documentation.
 
-The goal here is to create a consistent easily copy/paste-able pattern of component building and testing.  
+The goal here is to create a consistent easily copy/paste-able pattern of component building and testing.
 
-Let's try this one out.  Run:
+Let's try this one out. Run:
 
 ```
 yarn storybook
@@ -787,25 +803,26 @@ If all goes well you will be greeted by your fine looking base component (if not
 
 ![Storybook Base Template](https://res.cloudinary.com/dqse2txyi/image/upload/v1649133832/blogs/nextjs-fullstack-app-template/storybook-base-template_uwna7h.png)
 
-Now that we're starting to create more files it's good to get into the habit of running `yarn lint` before doing your commits to make sure everything is clean and ready to go.  I'm going to make a commit with message `build: create BaseTemplate component`.
+Now that we're starting to create more files it's good to get into the habit of running `yarn lint` before doing your commits to make sure everything is clean and ready to go. I'm going to make a commit with message `build: create BaseTemplate component`.
 
 ## Creating a Real Component
 
 Since we have our template, let's go through the process of using it to create a real component.
 
-Create `components/cards` directory.  Then copy the entirety of the `base` directory from `templates` into `cards` and rename it `cat`.  We are going to make a `CatCard`.  Rename each of the files to match.  When done it should look like this:
+Create `components/cards` directory. Then copy the entirety of the `base` directory from `templates` into `cards` and rename it `cat`. We are going to make a `CatCard`. Rename each of the files to match. When done it should look like this:
 
 ![Component Directory Structure](https://res.cloudinary.com/dqse2txyi/image/upload/v1649134894/blogs/nextjs-fullstack-app-template/component-directory-structure_ddw1ll.png)
 
-Now you can press `ctrl + shift + F` (or mac equivalent) in VS Code to do a full project search and replace.  Include only `components/cards/cat` and do a replace for `CatCard` to replace `BaseTemplate`.  It should look like the following:
+Now you can press `ctrl + shift + F` (or mac equivalent) in VS Code to do a full project search and replace. Include only `components/cards/cat` and do a replace for `CatCard` to replace `BaseTemplate`. It should look like the following:
 
 ![VS Code Find Replace](https://res.cloudinary.com/dqse2txyi/image/upload/v1649134987/blogs/nextjs-fullstack-app-template/vscode-find-replace_ithpow.png)
 
-Now you're ready to work, you've got a clean pre-generated template to work from that includes a story and mock data for your card.  Pretty handy!  Let's make it look like a real card:
+Now you're ready to work, you've got a clean pre-generated template to work from that includes a story and mock data for your card. Pretty handy! Let's make it look like a real card:
 
 _(For the record I did not create this beautiful card, it's based on an example created [here](https://codepen.io/lyon-etyo/pen/OJmyMGd) by the talented Lyon Etyo)_
 
 `CatCard.tsx`
+
 ```tsx
 import styles from './CatCard.module.css';
 import Image from 'next/image';
@@ -862,6 +879,7 @@ export default CatCard;
 Set the styles:
 
 `CatCard.module.css`
+
 ```css
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
 
@@ -936,12 +954,12 @@ Set the styles:
 .user__info > small {
   color: #666;
 }
-
 ```
 
 And set the mock data:
 
 `CatCard.mocks.ts`
+
 ```ts
 import { ICatCard } from './CatCard';
 
@@ -958,13 +976,14 @@ export const mockCatCardProps = {
 };
 ```
 
-Note that this uses an image of a cat `(/time-cat.jpg)` from the project's public directory.  You can find it in the project repository.
+Note that this uses an image of a cat `(/time-cat.jpg)` from the project's public directory. You can find it in the project repository.
 
-Also note that we did not even need to update the CatCard story at all!  It just pulls everything automatically.
+The only thing we need to update in `CatCard.stories` is to change the story title from `templates/CatCard` to `cards/CatCard`
 
-We do need to update our `next.config.js` because we are using a domain we haven't explicitly stated as permitted (for the avatar).  Simply update your config file to look like this:
+We do need to update our `next.config.js` because we are using a domain we haven't explicitly stated as permitted (for the avatar). Simply update your config file to look like this:
 
 `next.config.js`
+
 ```js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -983,9 +1002,10 @@ Now nun Storybook, and if you're lucky, you'll be greeted with:
 
 ![Storybook Cat Card](https://res.cloudinary.com/dqse2txyi/image/upload/v1649136596/blogs/nextjs-fullstack-app-template/cat-card-storybook_f10yic.png)
 
-This component can then easily be dropped anywhere in your actual application.  Use the `mock` props in the short term while testing and replace with real props when you're ready!
+This component can then easily be dropped anywhere in your actual application. Use the `mock` props in the short term while testing and replace with real props when you're ready!
 
 `pages/index.tsx`
+
 ```tsx
 import type { NextPage } from 'next';
 import Head from 'next/head';
@@ -1043,11 +1063,12 @@ yarn dev
 
 ![Final Masterpiece](https://res.cloudinary.com/dqse2txyi/image/upload/v1649137105/blogs/nextjs-fullstack-app-template/final-masterpiece_cbpxu1.png)
 
-## Add a Custom _document
+## Add a Custom Document
 
-Though it is not necessary at this stage you will likely want to have more fine grained control over what is in the `<head>` of your app.  Creating a custom `_document.tsx` in your `pages` directory allows you to do that.  Create that file now.
+Though it is not necessary at this stage you will likely want to have more fine grained control over what is in the `<head>` of your app. Creating a custom `_document.tsx` in your `pages` directory allows you to do that. Create that file now.
 
 `pages/_document.tsx`
+
 ```tsx
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 
@@ -1077,11 +1098,267 @@ export default MyDocument;
 
 _Note that I have removed the `@import` URL font from `components/cards/cat/CatCard.module.css` and placed that Google font here in the head to preload._
 
-Anything else you need to do or customize in your `<head>` element can now be done in this file.  
+Anything else you need to do or customize in your `<head>` element can now be done in this file.
 
-Be aware that this `<Head>` is not the same as the one imported from `next/head`.  The ywill both work together and this one is used solely for data you would like loaded on every single page.
+Be aware that this `<Head>` is not the same as the one imported from `next/head`. They will both work together and this one is used solely for data you would like loaded on every single page.
 
 For more info on how to use a custom `_document` see the [documentation](https://nextjs.org/docs/advanced-features/custom-document).
+
+## Add Layouts
+
+Layouts are an important concept in Next.js. They help you manage state between pages. For this section we will be using the same basic template as provided in the [official example](https://github.com/vercel/next.js/tree/canary/examples/layout-component) and simply customizing it to fit our project.
+
+Create a new directory called `layouts` in `components`. We will be copying our `templates/case` directory again two times. One to call`primary` and one called `sidebar`. It should look as follows when complete:
+
+![Layout Folders](https://res.cloudinary.com/dqse2txyi/image/upload/v1649187194/blogs/nextjs-fullstack-app-template/layout-folders_g3hzyt.png)
+
+Do a case-sensitive find/replace for `BaseTemplate` inside each of the files as well to replace with `PrimaryLayout` and `SidebarLayout` respectively.
+
+If you have any difficulty with this step, feel free to just take the structure from the repo.
+
+_All credit to \_leerob_ and _JJ Kasper_ from Vercel for the structure of these layout templates\_
+
+Update the content of `PrimaryLayout.tsx` and `PrimaryLayout.module.css` to be:
+
+`components/layouts/primary/PrimaryLayout.tsx`
+
+```tsx
+import Head from 'next/head';
+import styles from './PrimaryLayout.module.css';
+
+export interface IPrimaryLayout {}
+
+const PrimaryLayout: React.FC<IPrimaryLayout> = ({ children }) => {
+  return (
+    <>
+      <Head>
+        <title>Primary Layout Example</title>
+      </Head>
+      <main className={styles.main}>{children}</main>
+    </>
+  );
+};
+
+export default PrimaryLayout;
+```
+
+`components/layouts/primary/PrimaryLayout.module.css`
+
+```css
+.main {
+  display: flex;
+  height: calc(100vh - 64px);
+  background-color: white;
+}
+
+.main > section {
+  padding: 32px;
+}
+```
+
+Then for sidebar:
+
+`components/layouts/sidebar/SidebarLayout.tsx`
+
+```tsx
+import Link from 'next/link';
+import styles from './SidebarLayout.module.css';
+
+export interface ISidebarLayout {}
+
+const SidebarLayout: React.FC<ISidebarLayout> = () => {
+  return (
+    <nav className={styles.nav}>
+      <input className={styles.input} placeholder="Search..." />
+      <Link href="/">
+        <a>Home</a>
+      </Link>
+      <Link href="/about">
+        <a>About</a>
+      </Link>
+      <Link href="/contact">
+        <a>Contact</a>
+      </Link>
+    </nav>
+  );
+};
+
+export default SidebarLayout;
+```
+
+`components/layouts/sidebar/SidebarLayout.module.css`
+
+```css
+.nav {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  background-color: #fafafa;
+  padding: 32px;
+  border-right: 1px solid #eaeaea;
+}
+
+.nav > a {
+  margin: 8px 0;
+  text-decoration: none;
+  background: white;
+  border-radius: 4px;
+  font-size: 14px;
+  padding: 12px 16px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  color: #333;
+  border: 1px solid #eaeaea;
+  transition: all 0.125s ease;
+}
+
+.nav > a:hover {
+  background-color: #eaeaea;
+}
+
+.input {
+  margin: 32px 0;
+  text-decoration: none;
+  background: white;
+  border-radius: 4px;
+  border: 1px solid #eaeaea;
+  font-size: 14px;
+  padding: 8px 16px;
+  height: 28px;
+}
+```
+
+Now that these templates have been created, we need to use them. We are going to update our Home page and create another page called `about.tsx` to show how to use shared layouts and persist component state between pages.
+
+First we need to add a type which extends the default `NextPage` interface as for some reason it does not include the `getLayout` function out of the box. Create a custom type file that will handle that for us [inspired by this solution](https://stackoverflow.com/a/65898224)
+
+`pages/page.d.ts`
+
+```ts
+import { NextPage } from 'next';
+import { ComponentType, ReactElement, ReactNode } from 'react';
+
+export type NextPageWithLayout<P = {}> = NextPage<P> & {
+  getLayout?: (_page: ReactElement) => ReactNode;
+  layout?: ComponentType;
+};
+```
+
+You can now use that `NextPageWithLayout` interface in place of `NextPage` when you need to create pages with custom layouts.
+
+Now let's update our home page:
+
+`pages/index.tsx`
+
+```tsx
+import CatCard from '../components/cards/cat/CatCard';
+import { mockCatCardProps } from '../components/cards/cat/CatCard.mocks';
+import PrimaryLayout from '../components/layouts/primary/PrimaryLayout';
+import SidebarLayout from '../components/layouts/sidebar/SidebarLayout';
+import styles from '../styles/Home.module.css';
+import { NextPageWithLayout } from './page';
+
+const Home: NextPageWithLayout = () => {
+  return (
+    <section className={styles.main}>
+      <h1 className={styles.title}>
+        Welcome to <a href="https://nextjs.org">Next.js!</a>
+      </h1>
+      <CatCard {...mockCatCardProps.base} />
+    </section>
+  );
+};
+
+export default Home;
+
+Home.getLayout = (page) => {
+  return (
+    <PrimaryLayout>
+      <SidebarLayout />
+      {page}
+    </PrimaryLayout>
+  );
+};
+```
+
+and also create a new `about` page in the `pages` directory:
+
+`pages/about.tsx`
+
+```tsx
+import PrimaryLayout from '../components/layouts/primary/PrimaryLayout';
+import SidebarLayout from '../components/layouts/sidebar/SidebarLayout';
+import { NextPageWithLayout } from './page';
+
+const About: NextPageWithLayout = () => {
+  return (
+    <section>
+      <h2>Layout Example (About)</h2>
+      <p>
+        This example adds a property <code>getLayout</code> to your page,
+        allowing you to return a React component for the layout. This allows you
+        to define the layout on a per-page basis. Since we&apos;re returning a
+        function, we can have complex nested layouts if desired.
+      </p>
+      <p>
+        When navigating between pages, we want to persist page state (input
+        values, scroll position, etc.) for a Single-Page Application (SPA)
+        experience.
+      </p>
+      <p>
+        This layout pattern will allow for state persistence because the React
+        component tree is persisted between page transitions. To preserve state,
+        we need to prevent the React component tree from being discarded between
+        page transitions.
+      </p>
+      <h3>Try It Out</h3>
+      <p>
+        To visualize this, try tying in the search input in the{' '}
+        <code>Sidebar</code> and then changing routes. You&apos;ll notice the
+        input state is persisted.
+      </p>
+    </section>
+  );
+};
+
+export default About;
+
+About.getLayout = (page) => {
+  return (
+    <PrimaryLayout>
+      <SidebarLayout />
+      {page}
+    </PrimaryLayout>
+  );
+};
+```
+
+Finally, in the `mocks` files I have updated `PrimaryLayout.mocks.ts` to use `children: '{{component}}'` as a placeholder value to show in Storybook where a component would go, and I have removed the mock props in `SidebarLayout.mocks.ts` (though I do not remove the file, so I have the interface ready to go in case I ever need to add props).
+
+I have also changed the story titles from `templates/...` to `layouts/...`.
+
+Finally we can test it out. Save and run
+
+```
+yarn dev
+```
+
+Click between the two routes on the sidebar (Home and About) to toggle between pages. Note that the layouts used will persist without needing to reload (as was our intention) and you are left with a super fast and snappy experience.
+
+![Next Layout 01](https://res.cloudinary.com/dqse2txyi/image/upload/v1649190823/blogs/nextjs-fullstack-app-template/next-layout-01_ijadox.png)
+
+![Next Layout 02](https://res.cloudinary.com/dqse2txyi/image/upload/v1649190823/blogs/nextjs-fullstack-app-template/next-layout-02_v8hoti.png)
+
+On the Storybook side, we can even view and test out layout components independent of the application. The `PrimaryLayout` isn't too useful without content inside of it, but the sidebar is quite nice to have.
+
+```
+yarn storybook
+```
+
+![Storybook Sidebar](https://res.cloudinary.com/dqse2txyi/image/upload/v1649191018/blogs/nextjs-fullstack-app-template/storybook-sidebar_actilj.png)
+
 ## Deployment
 
 Our final step will be to show the process of deployment of a Next.js app.
@@ -1090,33 +1367,35 @@ We will be using Vercel as it is the simplest and most straightforward deploymen
 
 Be aware Vercel is absolutely not the only option, other major services like [AWS](https://aws.amazon.com/blogs/mobile/host-a-next-js-ssr-app-with-real-time-data-on-aws-amplify/), [Netlify](https://www.netlify.com/with/nextjs/), etc all work as well if you choose to go that route.
 
-Ultimately you just need a service where you can run the `next start` command presuming you're not using an entirely [statically generated site](https://nextjs.org/docs/advanced-features/static-html-export) (in which case any static hosting tool would work and no custom Next server would be required).  
+Ultimately you just need a service where you can run the `next start` command presuming you're not using an entirely [statically generated site](https://nextjs.org/docs/advanced-features/static-html-export) (in which case any static hosting tool would work and no custom Next server would be required).
 
-Deploying on Vercel as a hobby user is completely free.  To begin we will [create an account on Vercel](https://vercel.com/).
+Deploying on Vercel as a hobby user is completely free. To begin we will [create an account on Vercel](https://vercel.com/).
 
-Once logged in, click `+ New Project` and give Vercel access to your Github repositories.  You can give global access, or you can select only the repository you want to deploy.  I am going to select this repository called `nextjs-fullstack-app-template`.
+Once logged in, click `+ New Project` and give Vercel access to your Github repositories. You can give global access, or you can select only the repository you want to deploy. I am going to select this repository called `nextjs-fullstack-app-template`.
 
-Once you have selected it you'll need to configure it.  In the `Build and Output Settings` section make sure you replace the default NPM commands with your yarn commands (unless you are using NPM).
+Once you have selected it you'll need to configure it. In the `Build and Output Settings` section make sure you replace the default NPM commands with your yarn commands (unless you are using NPM).
 
 ![Next Configure](https://res.cloudinary.com/dqse2txyi/image/upload/v1649164443/blogs/nextjs-fullstack-app-template/next-configure_dtywld.png)
 
 We have not used any environment variables yet so no need to add any.
 
-Once that's it just click `Deploy` and you're done!  It's that easy.  
+Once that's it just click `Deploy` and you're done! It's that easy.
 
 ![Successful Deploy](https://res.cloudinary.com/dqse2txyi/image/upload/v1649164722/blogs/nextjs-fullstack-app-template/successful-depoy_pyg2ry.png)
 
-Not only is your site deployed now, it will continue to get re-deployed automatically every time you commit to your primary branch.  If you don't want this behavior, then it's easy to configure in the Vercel dashboard.  
+_(The screenshot above is a bit out of date, I originally wrote the deployment section before the layout section, but you get the idea)_
 
-The nice thing is that you already configured your `yarn build` command to ensure a working production build before you can push you code, so you can push with confidence in presuming your deployment will be successful.  
+Not only is your site deployed now, it will continue to get re-deployed automatically every time you commit to your primary branch. If you don't want this behavior, then it's easy to configure in the Vercel dashboard.
 
-The only thing you need to keep in mind are the differences between your two environments.  It's still possible for your build to succeed locally but fail on Vercel if for example your scripts are different (using NPM instead of yarn or vice versa) or more commonly if you are missing environment variables.  
+The nice thing is that you already configured your `yarn build` command to ensure a working production build before you can push you code, so you can push with confidence in presuming your deployment will be successful.
 
-We will be adding `env` values in future tutorials so you will need to make sure those values are configured in both your local and production environment, since they are secrets and should never be committed to a public (or even private if can be avoided) repository.  
+The only thing you need to keep in mind are the differences between your two environments. It's still possible for your build to succeed locally but fail on Vercel if for example your scripts are different (using NPM instead of yarn or vice versa) or more commonly if you are missing environment variables.
+
+We will be adding `env` values in future tutorials so you will need to make sure those values are configured in both your local and production environment, since they are secrets and should never be committed to a public (or even private if can be avoided) repository.
 
 ## Authentication
 
-Let's look at how to add user authentication with [next-auth](https://next-auth.js.org/).  NextAuth is a fantastic tool that removes a lot of the manual effort and management of the authentication process and leaves you with only the application specific behavior to configure.
+Let's look at how to add user authentication with [next-auth](https://next-auth.js.org/). NextAuth is a fantastic tool that removes a lot of the manual effort and management of the authentication process and leaves you with only the application specific behavior to configure.
 
 It has long been said that you should [never roll your own auth](https://withblue.ink/2020/04/08/stop-writing-your-own-user-authentication-code.html) and while of course, like everything, the reality is more complex and every project must be evaluated with the requirements it has, it's good general advice overall.
 
@@ -1124,17 +1403,18 @@ User auth is a very complex topic, and if you are not experienced in it, making 
 
 NextAuth does support using your own managed credentials (storing your own users in your database) which is a great feature if your app requires it, but since we haven't even configured a database yet we're going to set up the auth in our app to allow users to login with common existing credentials like Google and Github.
 
-Begin by installing `next-auth`.  
+Begin by installing `next-auth`.
 
 ```
 yarn add next-auth
 ```
 
-Unlike most of our recent tooling, this must exist during the runtime of our application, so it cannot be a `devDependency`.  
+Unlike most of our recent tooling, this must exist during the runtime of our application, so it cannot be a `devDependency`.
 
-First step is to add the auth handler to an api route.  Create the directory structure `/pages/api/auth` and create a file with the odd sounding filename `[...nextauth].ts` inside of it with the following content:
+First step is to add the auth handler to an api route. Create the directory structure `/pages/api/auth` and create a file with the odd sounding filename `[...nextauth].ts` inside of it with the following content:
 
 `pages/api/auth/[...nextauth].ts`
+
 ```ts
 import NextAuth, { Profile } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
@@ -1177,45 +1457,46 @@ export default NextAuth({
 });
 ```
 
-_(Note that I have created my own interface above to show the shape of the current Google profile payload response data.  This is not guaranteed to stay current if Google chooses to change their API in the future, so be aware, it is solely meant as a convenience.)_
+_(Note that I have created my own interface above to show the shape of the current Google profile payload response data. This is not guaranteed to stay current if Google chooses to change their API in the future, so be aware, it is solely meant as a convenience.)_
 
 First we will need to add some secret environment variables the auth can use to get private information from our environment.
 
-Create a file called `.env.local`.  It's very important you use this exact naming pattern because this file is included in your `.gitignore` by default with the `create-next-app` configuration.  
+Create a file called `.env.local`. It's very important you use this exact naming pattern because this file is included in your `.gitignore` by default with the `create-next-app` configuration.
 
 **You must ensure this file is not included in your code repo when you commit.**
 
-If using VS Code you can do a sanity check and see that the filename should be greyed out compared to other files around it.  It should also not appear in your source control tab showing files ready for staging.  
+If using VS Code you can do a sanity check and see that the filename should be greyed out compared to other files around it. It should also not appear in your source control tab showing files ready for staging.
 
-Before we create the environment file we will need a randomized secret value for NextAuth to use.  If on a unix system you should be able to simply run
+Before we create the environment file we will need a randomized secret value for NextAuth to use. If on a unix system you should be able to simply run
 
 ```
 openssl rand -hex 32
 ```
 
-to generate a random value.  If not you can use an online tool or method of your preference.  
+to generate a random value. If not you can use an online tool or method of your preference.
 
 `.env.local`
+
 ```.env
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="YOUR_RANDOM_SECRET_VALUE"
 ```
 
-Replace `YOUR_RANDOM_SECRET_VALUE` in the file above with the random string you generated.  Remember that you are going to need to add this to your production environment as well, but we can do that later in the process.
+Replace `YOUR_RANDOM_SECRET_VALUE` in the file above with the random string you generated. Remember that you are going to need to add this to your production environment as well, but we can do that later in the process.
 
-We will begin with the Google provider.  Relevant documentation is [here](https://next-auth.js.org/providers/google) and [here](https://developers.google.com/identity/protocols/oauth2) and credentials/secrets can be obtained [here](https://console.developers.google.com/).
+We will begin with the Google provider. Relevant documentation is [here](https://next-auth.js.org/providers/google) and [here](https://developers.google.com/identity/protocols/oauth2) and credentials/secrets can be obtained [here](https://console.developers.google.com/).
 
 Click "Credentials" then "Create Credentials" from the Google API console.
 
-It may ask you to configure your "consent" screen in which case select "external".  
+It may ask you to configure your "consent" screen in which case select "external".
 
-Your form will look something like this.  Google will not be able to redirect back to your local machine, so we'll be testing auth on your remote environment.  If you've been following the full tutorial you will already have that configured for Vercel, so all you need to do is go to your Vercel dashboard and get the URL of your app.  
+Your form will look something like this. Google will not be able to redirect back to your local machine, so we'll be testing auth on your remote environment. If you've been following the full tutorial you will already have that configured for Vercel, so all you need to do is go to your Vercel dashboard and get the URL of your app.
 
 If you are using another service for deployment the process should be nearly the same.
 
 ![Google OAuth](https://res.cloudinary.com/dqse2txyi/image/upload/v1649171060/blogs/nextjs-fullstack-app-template/google-oauth_bqf6er.png)
 
-Next add whatever "scopes" you like.  These are keys that refer to the info your app will be able to see about the user.  In this case I have just selected `userinfo.profile` to get name, but there is other info you request as well.
+Next add whatever "scopes" you like. These are keys that refer to the info your app will be able to see about the user. In this case I have just selected `userinfo.profile` to get name, but there is other info you request as well.
 
 Depending on what you configure this is what controls what the user sees in terms of things like "This app wants access to your name, email, etc" when they login.
 
@@ -1232,6 +1513,7 @@ The default callback URL for NExtAUth and Google is your domain followed by `/ap
 Once you have your `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` add them to your env:
 
 `.env.local`
+
 ```.env
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="YOUR_RANDOM_SECRET_VALUE"
@@ -1242,9 +1524,10 @@ GOOGLE_CLIENT_SECRET="YOUR_PERSONAL_GOOGLE_CLIENT_SECRET"
 
 Obviously replacing the personal placeholders above with the values you get from your Google account.
 
-Now we can get back to the client side.  You need to wrap your application in NextAuth's `<SessionProvider>` component like so:
+Now we can get back to the client side. You need to wrap your application in NextAuth's `<SessionProvider>` component like so:
 
 `pages/_app.tsx`
+
 ```tsx
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
@@ -1261,9 +1544,10 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 export default MyApp;
 ```
 
-Then we can add a simple "Sign In" and "Sign Out" button to the homepage.  You can move them to separate components later at your discretion.
+Then we can add a simple "Sign In" and "Sign Out" button to the homepage. You can move them to separate components later at your discretion.
 
 `pages/index.tsx`
+
 ```tsx
 import type { NextPage } from 'next';
 import { signOut, useSession } from 'next-auth/react';
@@ -1305,7 +1589,7 @@ const Home: NextPage = () => {
 export default Home;
 ```
 
-Make a commit to your project and push to your live production URL.  Presuming you have properly configured that domain on your Google console then your login process will be as follows:
+Make a commit to your project and push to your live production URL. Presuming you have properly configured that domain on your Google console then your login process will be as follows:
 
 ![Login Step 01](https://res.cloudinary.com/dqse2txyi/image/upload/v1649184647/blogs/nextjs-fullstack-app-template/sign-in-step-01_mjkoxn.png)
 
@@ -1317,19 +1601,18 @@ _You can customize the above sign-in page to look however you like by creating y
 
 ![Login Step 04](https://res.cloudinary.com/dqse2txyi/image/upload/v1649184647/blogs/nextjs-fullstack-app-template/sign-in-step-04_yxhwid.png)
 
+And that's it! You now have basic authentication configured for your app. Trying refreshing and testing your logout button as well.
 
-And that's it!  You now have basic authentication configured for your app.  Trying refreshing and testing your logout button as well.
+You can use the `useSession()` hook to check for auth, you can read and process your token on the server side. Spend some time with the NextAuth docs to cover [all the different options you have](https://next-auth.js.org/configuration/options) for further development.
 
-You can use the `useSession()` hook to check for auth, you can read and process your token on the server side.  Spend some time with the NextAuth docs to cover [all the different options you have](https://next-auth.js.org/configuration/options) for further development.  
+You can also add any number of additional auth [providers](https://next-auth.js.org/providers/), each one will have to be configured and secrets generated on those platforms, but they all follow the same basic process as Google. In fact most are even simpler.
 
-You can also add any number of additional auth [providers](https://next-auth.js.org/providers/), each one will have to be configured and secrets generated on those platforms, but they all follow the same basic process as Google.  In fact most are even simpler.  
 ## Conclusion
 
 I hope you found this tutorial and learned something about setting up a solid and scaleable Next.js project for you and your team.
 
-This is the first part of a multi-part series on creating a production quality Next.js app template.  In coming installments we will also look at:
+This is the first part of a multi-part series on creating a production quality Next.js app template. In coming installments we will also look at:
 
-- Custom _document
 - An example app with multiple components, API routes, `getStaticProps` and `getServerSide` Props
 - Unit testing and end to end testing
 - Database connection with Prisma and your choice of DB adapter (we'll use Supabase and Postgres)
@@ -1338,3 +1621,8 @@ This is the first part of a multi-part series on creating a production quality N
 - Steps involved to transform into a monorepo with multiple apps and shared packages
 
 Stay tuned and please don't hesitate to ask any questions, I'm happy to answer if I can!
+
+TODO:
+
+- NextAuth for storybook
+- Add repo link (feel free to just take the structure from the repo)
