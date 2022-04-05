@@ -1,3 +1,45 @@
+All code from this tutorial as a complete package is available in [this repository](https://github.com/alexeagleson/nextjs-fullstack-app-template).
+
+If you find this tutorial helpful, please share it with your friends and colleagues! For more like it you can subscribe on [Youtube](https://www.youtube.com/channel/UCV5YqK3AaInd3lYFQqlp7Lw) or follow me on [Twitter](https://twitter.com/eagleson_alex).
+
+## Table of Contents
+
+1. [What is Next.js?](#what-is-nextjs)
+1. [Introduction](#introduction)
+1. [Project Setup](#project-setup)
+1. [Engine Locking](#engine-locking)
+1. [Git Setup](#git-setup)
+1. [Code Formatting and Quality Tools](#code-formatting-and-quality-tools)
+1. [Git Hooks](#git-hooks)
+1. [VS Code Configuration](#vs-code-configuration)
+1. [Debugging](#debugging)
+1. [Directory Structure](#directory-structure)
+1. [Adding Storybook](#adding-storybook)
+1. [Creating a Component Template](#creating-a-component-template)
+1. [Using the Component Template](#using-the-component-template)
+1. [Adding a Custom Document](#adding-a-custom-document)
+1. [Adding Layouts](#adding-layouts)
+1. [Deployment](#deployment)
+1. [Conclusion](#conclusion)
+
+## What is Next.js?
+
+_"Next.js gives you the best developer experience with all the features you need for production: hybrid static & server rendering, TypeScript support, smart bundling, route pre-fetching, and more. No config needed."_
+
+As described in their words above, Next.js is very much an all-in-one fullstack modern application building solution. It includes first class support for Typescript and React, while offering easy solutions for some of the most common requirements in a modern application like routing, API, postCSS tools, and code-splitting.
+
+It also supports both static site generation (for lightning fast static HTML pages that can be hosted anywhere) or with managed hosting services like Vercel/AWS/etc that run a Node server and support full on-demand data loading and server-side rendered pages.
+
+Next.js has quickly become one of the most in demand skills in the web development space. This tutorial aims to act as kind of a "practical" extension to the [documentation](https://nextjs.org/docs/getting-started) and help you set up a project using a lot of best practices that will improve your chances of keeping everything management as you scale.
+
+## Introduction
+
+This tutorial is not meant to replace the official documentation, which is absolutely fantastic. I highly recommend you take a read through at least the [basic features](https://nextjs.org/docs/basic-features/pages) section before you begin this tutorial, so you'll be familiar with the terminology and tools and some of the components they provide that are similar, but usually "more powerful" versions of their vanilla HTML counterparts.
+
+Please review the table of contents to get an idea of each of the topics we will be touching in this extensive tutorial. I will freely acknowledge many of them are strict and opinionated configurations, if any of tem don't appeal to you then in most cases you can simply skip over those sections and should still be able to complete the tutorial without too much trouble.
+
+Now, with all that said, if you are ready, let's dive right in!
+
 ## Project Setup
 
 We'll begin by creating a default Next.js application with a Typescript template.
@@ -61,12 +103,12 @@ Note that the use of `engine-strict` didn't specifically say anything about `yar
 
 ```json
   "name": "nextjs-fullstack-app-template",
-  "author": "Alex Eagleson",
+  "author": "YOUR_NAME",
   "description": "A tutorial and template for creating a production-ready fullstack Next.js application",
   "version": "0.1.0",
   "private": true,
   "license" : "MIT"
-  "homepage": "https://github.com/alexeagleson/nextjs-fullstack-app-template"
+  "homepage": "YOUR_GIT_REPO_URL"
   "engines": {
     "node": ">=14.0.0",
     "yarn": ">=1.22.0",
@@ -466,7 +508,7 @@ This will allow you to log server data in the browser while working in dev mode,
 
 At this stage I'll be making a new commit with message `build: add debugging configuration`
 
-## Setting up Directory Structure
+## Directory Structure
 
 This section is now going to cover setting up the folder structure in our project. This is one of those topics that many people will have _extremely strong opinions about_, and for good reason! Directory structure can really make or break a project in the long term when it gets out of control, especially when fellow team members have to spend unnecessary time trying to guess where to put things (or find things).
 
@@ -667,7 +709,7 @@ I would encourage you to play around and get familiar with the examples if you'v
 
 At this stage I'll be making a commit with message `build: implement storybook`.
 
-## Creating Our Component Template
+## Creating a Component Template
 
 It's time to bring together all the configuration we have done and look at how we might create and implement our first component using the standards we have set for ourselves.
 
@@ -805,7 +847,7 @@ If all goes well you will be greeted by your fine looking base component (if not
 
 Now that we're starting to create more files it's good to get into the habit of running `yarn lint` before doing your commits to make sure everything is clean and ready to go. I'm going to make a commit with message `build: create BaseTemplate component`.
 
-## Creating a Real Component
+## Using the Component Template
 
 Since we have our template, let's go through the process of using it to create a real component.
 
@@ -1063,7 +1105,7 @@ yarn dev
 
 ![Final Masterpiece](https://res.cloudinary.com/dqse2txyi/image/upload/v1649137105/blogs/nextjs-fullstack-app-template/final-masterpiece_cbpxu1.png)
 
-## Add a Custom Document
+## Adding a Custom Document
 
 Though it is not necessary at this stage you will likely want to have more fine grained control over what is in the `<head>` of your app. Creating a custom `_document.tsx` in your `pages` directory allows you to do that. Create that file now.
 
@@ -1104,7 +1146,7 @@ Be aware that this `<Head>` is not the same as the one imported from `next/head`
 
 For more info on how to use a custom `_document` see the [documentation](https://nextjs.org/docs/advanced-features/custom-document).
 
-## Add Layouts
+## Adding Layouts
 
 Layouts are an important concept in Next.js. They help you manage state between pages. For this section we will be using the same basic template as provided in the [official example](https://github.com/vercel/next.js/tree/canary/examples/layout-component) and simply customizing it to fit our project.
 
@@ -1114,7 +1156,7 @@ Create a new directory called `layouts` in `components`. We will be copying our 
 
 Do a case-sensitive find/replace for `BaseTemplate` inside each of the files as well to replace with `PrimaryLayout` and `SidebarLayout` respectively.
 
-If you have any difficulty with this step, feel free to just take the structure from the repo.
+If you have any difficulty with this step, feel free to just [take the structure from the repo](https://github.com/alexeagleson/nextjs-fullstack-app-template).
 
 _All credit to \_leerob_ and _JJ Kasper_ from Vercel for the structure of these layout templates\_
 
@@ -1609,11 +1651,12 @@ You can also add any number of additional auth [providers](https://next-auth.js.
 
 ### Storybook
 
-For those using Storybook, you'll get a "not defined" error if you try to load up a component that uses the auth hooks.  That's because we haven't wrapped our stories in the auth provider.
+For those using Storybook, you'll get a "not defined" error if you try to load up a component that uses the auth hooks. That's because we haven't wrapped our stories in the auth provider.
 
 For this tutorial we are not going to worry about how to mock the actual authentication in Storybook, that's beyond the scope, but here's all you need to add to get your auth components back up and running in storybook in a default "logged out" state:
 
 `.storybook.preview.js`
+
 ```jsx
 import { SessionProvider } from 'next-auth/react';
 

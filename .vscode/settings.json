@@ -10,10 +10,13 @@
     "Eagleson",
     "esbenp",
     "Etyo",
+    "Kasper",
+    "leerob",
     "nextauth",
     "nextjs",
     "npmrc",
     "pravatar",
+    "preload",
     "prettierignore",
     "prettierrc",
     "rgba",
@@ -25,5 +28,5 @@
     "userinfo",
     "Vercel",
     "Viewports"
-]
+  ]
 }
