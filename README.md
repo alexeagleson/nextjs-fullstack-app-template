@@ -432,7 +432,7 @@ Inside of your `.vscode` directory create a `launch.json` file:
 
 With that script in place you have three choices for debugging.  CLick the little "bug & play icon" on the left of VS Code or press `Ctrl + Shift + D` to access the debugging menu.  You can select which script you want to run and start/stop it with the start/stop buttons.
 
-![VS Code Debugger](https://res.cloudinary.com/dqse2txyi/image/upload/v1649167744/blogs/nextjs-fullstack-app-template/vscode-debugger_jtcvol.png)
+![VS Code Debugger](https://res.cloudinary.com/dqse2txyi/image/upload/v1649168143/blogs/nextjs-fullstack-app-template/vscode-debugger_x1puqk.png)
 
 In addition to this, or if you are not using VS Code, we can also set up some helpful debugging scripts in your project.
 
@@ -441,6 +441,23 @@ First we will install the [cross-env](https://www.npmjs.com/package/cross-env) w
 ```
 yarn add -D cross-env
 ```
+
+With that package installed we can update our `package.json` `dev` script to look like the following:
+
+`package.json`
+```json
+{
+  ...
+  "scripts": {
+    ...
+    "dev": "cross-env NODE_OPTIONS='--inspect' next dev",
+  },
+}
+```
+
+This will allow you to log server data in the browser while working in dev mode, making it easier to debug issues.
+
+At this stage I'll be making a new commit with message `build: add debugging configuration`
 
 ## Setting up Directory Structure
 
@@ -1060,13 +1077,145 @@ The only thing you need to keep in mind are the differences between your two env
 
 We will be adding `env` values in future tutorials so you will need to make sure those values are configured in both your local and production environment, since they are secrets and should never be committed to a public (or even private if can be avoided) repository.  
 
+## Authentication
+
+Let's look at how to add user authentication with [next-auth](https://next-auth.js.org/).  NextAuth is a fantastic tool that removes a lot of the manual effort and management of the authentication process and leaves you with only the application specific behavior to configure.
+
+It has long been said that you should [never roll your own auth](https://withblue.ink/2020/04/08/stop-writing-your-own-user-authentication-code.html) and while of course, like everything, the reality is more complex and every project must be evaluated with the requirements it has, it's good general advice overall.
+
+User auth is a very complex topic, and if you are not experienced in it, making errors has a much higher risk than making errors in other areas of your application of exposing sensitive user data, which can obviously cause major issues.
+
+NextAuth does support using your own managed credentials (storing your own users in your database) which is a great feature if your app requires it, but since we haven't even configured a database yet we're going to set up the auth in our app to allow users to login with common existing credentials like Google and Github.
+
+Begin by installing `next-auth`.  
+
+```
+yarn add next-auth
+```
+
+Unlike most of our recent tooling, this must exist during the runtime of our application, so it cannot be a `devDependency`.  
+
+First step is to add the auth handler to an api route.  Create the directory structure `/pages/api/auth` and create a file with the odd sounding filename `[...nextauth].ts` inside of it with the following content:
+
+`pages/api/auth/[...nextauth].ts`
+```ts
+import NextAuth from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
+
+if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+  throw Error(
+    'GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be defined in environment'
+  );
+}
+
+export default NextAuth({
+  // Configure one or more authentication providers
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+  ],
+  callbacks: {
+    async signIn({ account, profile }) {
+      if (account.provider === 'google') {
+        return profile.email_verified === true;
+      }
+      return true; // Do different verification for other providers that don't have `email_verified`
+    },
+  },
+});
+```
+
+First we will need to add some secret environment variables the auth can use to get private information from our environment.
+
+Create a file called `.env.local`.  It's very important you use this exact naming pattern because this file is included in your `.gitignore` by default with the `create-next-app` configuration.  
+
+**You must ensure this file is not included in your code repo when you commit.**
+
+If using VS Code you can do a sanity check and see that the filename should be greyed out compared to other files around it.  It should also not appear in your source control tab showing files ready for staging.  
+
+Before we create the environment file we will need a randomized secret value for NextAuth to use.  If on a unix system you should be able to simply run
+
+```
+openssl rand -hex 32
+```
+
+to generate a random value.  If not you can use an online tool or method of your preference.  
+
+`.env.local`
+```.env
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="YOUR_RANDOM_SECRET_VALUE"
+```
+
+Replace `YOUR_RANDOM_SECRET_VALUE` in the file above with the random string you generated.  Remember that you are going to need to add this to your production environment as well, but we can do that later in the process.
+
+We will begin with the Google provider.  Relevant documentation is [here](https://next-auth.js.org/providers/google) and [here](https://developers.google.com/identity/protocols/oauth2) and credentials/secrets can be obtained [here](https://console.developers.google.com/).
+
+Click "Credentials" then "Create Credentials" from the Google API console.
+
+It may ask you to configure your "consent" screen in which case select "external".  
+
+Your form will look something like this.  Google will not be able to redirect back to your local machine, so we'll be testing auth on your remote environment.  If you've been following the full tutorial you will already have that configured for Vercel, so all you need to do is go to your Vercel dashboard and get the URL of your app.  
+
+If you are using another service for deployment the process should be nearly the same.
+
+![Google OAuth](https://res.cloudinary.com/dqse2txyi/image/upload/v1649171060/blogs/nextjs-fullstack-app-template/google-oauth_bqf6er.png)
+
+Next add whatever "scopes" you like.  These are keys that refer to the info your app will be able to see about the user.  In this case I have just selected `userinfo.profile` to get name, but there is other info you request as well.
+
+Depending on what you configure this is what controls what the user sees in terms of things like "This app wants access to your name, email, etc" when they login.
+
+Once that is finished you can click "Publish App".
+
+Now to get the actual credentials, click `Credentials -> Create Credentials -> OAuth client ID`
+
+Fill out this screen in a similar fashion with your URL in place:
+
+![Google OAuth CLient ID](https://res.cloudinary.com/dqse2txyi/image/upload/v1649171565/blogs/nextjs-fullstack-app-template/google-client-id_sem9nl.png)
+
+Once you have your `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` add them to your env:
+
+`.env.local`
+```.env
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="YOUR_RANDOM_SECRET_VALUE"
+
+GOOGLE_CLIENT_ID="YOUR_PERSONAL_GOOGLE_CLIENT_ID"
+GOOGLE_CLIENT_SECRET="YOUR_PERSONAL_GOOGLE_CLIENT_SECRET"
+```
+
+Obviously replacing the personal placeholders above with the values you get from your Google account.
+
+Now we can get back to the client side.  You need to wrap your application in NextAuth's `<SessionProvider>` component like so:
+
+`pages/_app.tsx`
+```tsx
+import { SessionProvider } from 'next-auth/react';
+import type { AppProps } from 'next/app';
+import '../styles/globals.css';
+
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+  return (
+    <SessionProvider session={session}>
+      <Component {...pageProps} />
+    </SessionProvider>
+  );
+}
+
+export default MyApp;
+```
+
+
+
 ## Conclusion
 
 I hope you found this tutorial and learned something about setting up a solid and scaleable Next.js project for you and your team.
 
 This is the first part of a multi-part series on creating a production quality Next.js app template.  In coming installments we will also look at:
 
-
+- Custom _document
 - An example app with multiple components, API routes, `getStaticProps` and `getServerSide` Props
 - Unit testing and end to end testing
 - Database connection with Prisma and your choice of DB adapter (we'll use Supabase and Postgres)

@@ -1,11 +1,15 @@
 import type { NextPage } from 'next';
+import { signOut, useSession } from 'next-auth/react';
 import Head from 'next/head';
 import Image from 'next/image';
+import Link from 'next/link';
 import CatCard from '../components/cards/cat/CatCard';
 import { mockCatCardProps } from '../components/cards/cat/CatCard.mocks';
 import styles from '../styles/Home.module.css';
 
 const Home: NextPage = () => {
+  const { status } = useSession();
+
   return (
     <div className={styles.container}>
       <Head>
@@ -15,6 +19,17 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
+        {status === 'authenticated' ? (
+          <>
+            <p>Signed in</p>
+            <button onClick={() => signOut()}>Sign Out</button>
+          </>
+        ) : (
+          <Link href="/api/auth/signin">
+            <a>Sign in</a>
+          </Link>
+        )}
+
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
