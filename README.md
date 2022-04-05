@@ -357,3 +357,36 @@ module.exports = {
 Feel free to try some commits that *don't* follow the rules and see how they are not accepted, and you receive feedback that is designed to help you correct them.
 
 I'm going to create a new commit now with the message `ci: implement commitlint`.
+
+You can see the result of the complete culmination of this setup in the screenshot below, hopefully yours looks similar:
+
+![Dev Experience](https://res.cloudinary.com/dqse2txyi/image/upload/v1649129725/blogs/nextjs-fullstack-app-template/dev-experience_wznie9.png)
+
+## Setting up Directory Structure
+
+This section is now going to cover setting up the folder structure in our project.  This is one of those topics that many people will have *extremely strong opinions about*, and for good reason!  Directory structure can really make or break a project in the long term when it gets out of control, especially when fellow team members have to spend unnecessary time trying to guess where to put things (or find things).
+
+I personally like to take a fairly simplistic approach, keep things separated basically in a class model/view style.  We will be using three primary folders:
+
+```
+/components
+/lib
+/pages
+```
+
+- `component` - The individual UI components that make up the app will live in here
+- `lib` - Business/app/domain logic will live in here.
+- `pages` - Will be the actual routes/pages as per the required NextJs structure.  
+
+We will have other folders in addition to this to support the project, but the core of almost everything that makes up the unique app that we are building will be housed in these three directories.
+
+Within `components` we will have subdirectories that kind of group similar types of components together.  You can use any method you prefer to do this.  I have used the MUI library quite a bit in my time, so I tend to follow the same organization they use for components in [their documentation](https://mui.com/getting-started/installation/)
+
+For example inputs, surfaces, navigation, utils, layout etc.  
+
+You don't need to create these directories in advance and leave them empty.  I would just create them as you go while building your components.  
+
+This section is simply designed to explain how I will be setting up this project, there are many other ways you might choose to organize yours and I would encourage you to choose whatever works best for you and your team.  
+
+At this point I will be making a commit called `rfc: create directory structure`
+
