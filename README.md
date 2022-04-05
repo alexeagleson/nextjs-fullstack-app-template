@@ -1,34 +1,64 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Project Setup
 
-## Getting Started
-
-First, run the development server:
+We'll begin by creating a default NextJs application with a Typescript template.
 
 ```bash
-npm run dev
-# or
+npx create-next-app --ts nextjs-fullstack-app-template
+
+cd nextjs-fullstack-app-template
+```
+
+First we will test to make sure the app is working. We're going to be using `yarn` for this example, but you could just as easily use NPM if you choose.
+
+```
+yarn install
+
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+You should see the demo app available on [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+![First Page Load](https://res.cloudinary.com/dqse2txyi/image/upload/v1649125549/blogs/nextjs-fullstack-app-template/first-load_sm29jf.png)
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Engine Locking
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+We would like for all developers working on this project to use the same Node engine and package manager we are using. TO do that we create two new files:
 
-## Learn More
+- `.nvmrc` -- Will tell other uses of the project which version of Node is used
+- `.npmrc` - WIll tell other users of the project which package manager is used
 
-To learn more about Next.js, take a look at the following resources:
+We are using `Node v16 Gallium` and `yarn` for this project so we set those values like so:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`.nvmrc`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```.nvmrc
+lts/gallium
+```
 
-## Deploy on Vercel
+`.npmrc`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+engine-strict=true
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+You can check your version of Node with `node --version` and make sure you are setting the correct one. A list of Node version codenames can be found [here](https://github.com/nodejs/Release/blob/main/CODENAMES.md)
+
+Note that the use of `engine-strict` didn't specifically say anything about `yarn`, we do that in `package.json`:
+
+`package.json`
+
+```json
+  "name": "nextjs-fullstack-app-template",
+  "author": "Alex Eagleson",
+  "description": "A tutorial and template for creating a production-ready fullstack NextJs application",
+  "version": "0.1.0",
+  "private": true,
+  "license" : "MIT"
+  "homepage": "https://github.com/alexeagleson/nextjs-fullstack-app-template"
+  "engines": {
+    "node": ">=14.0.0",
+    "yarn": ">=1.22.0",
+    "npm": "please-use-yarn"
+  },
+  ...
+```
