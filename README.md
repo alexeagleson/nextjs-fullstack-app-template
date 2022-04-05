@@ -391,6 +391,57 @@ Very handy stuff and just another thing you no longer need to think about so you
 
 I'll now make a commit with message `build: implement vscode project settings`.
 
+## Debugging
+
+Let's set up a convenient environment for debugging our application in case we run into any issues during development.  
+
+Inside of your `.vscode` directory create a `launch.json` file:
+
+`launch.json`
+```json
+{
+  "version": "0.1.0",
+  "configurations": [
+    {
+      "name": "Next.js: debug server-side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev"
+    },
+    {
+      "name": "Next.js: debug client-side",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "url": "http://localhost:3000"
+    },
+    {
+      "name": "Next.js: debug full stack",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev",
+      "console": "integratedTerminal",
+      "serverReadyAction": {
+        "pattern": "started server on .+, url: (https?://.+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
+      }
+    }
+  ]
+}
+```
+
+With that script in place you have three choices for debugging.  CLick the little "bug & play icon" on the left of VS Code or press `Ctrl + Shift + D` to access the debugging menu.  You can select which script you want to run and start/stop it with the start/stop buttons.
+
+![VS Code Debugger](https://res.cloudinary.com/dqse2txyi/image/upload/v1649167744/blogs/nextjs-fullstack-app-template/vscode-debugger_jtcvol.png)
+
+In addition to this, or if you are not using VS Code, we can also set up some helpful debugging scripts in your project.
+
+First we will install the [cross-env](https://www.npmjs.com/package/cross-env) which will; be necessary to set environment variables if you have teammates working on different environments (Windows, Linux, Mac, etc).  
+
+```
+yarn add -D cross-env
+```
+
 ## Setting up Directory Structure
 
 This section is now going to cover setting up the folder structure in our project.  This is one of those topics that many people will have *extremely strong opinions about*, and for good reason!  Directory structure can really make or break a project in the long term when it gets out of control, especially when fellow team members have to spend unnecessary time trying to guess where to put things (or find things).
@@ -789,7 +840,6 @@ const CatCard: React.FC<ICatCard> = ({ tag, title, body, author, time }) => {
 };
 
 export default CatCard;
-
 ```
 
 Set the styles:
@@ -895,7 +945,24 @@ Note that this uses an image of a cat `(/time-cat.jpg)` from the project's publi
 
 Also note that we did not even need to update the CatCard story at all!  It just pulls everything automatically.
 
-Run storybook and if you're lucky you'll be greeted with:
+We do need to update our `next.config.js` because we are using a domain we haven't explicitly stated as permitted (for the avatar).  Simply update your config file to look like this:
+
+`next.config.js`
+```js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  images: {
+    domains: ['i.pravatar.cc'],
+  },
+};
+
+module.exports = nextConfig;
+```
+
+Alternatively you could just place the avatar image in your own public directory, but for the sake of learning the process of using an external domain, we'll leave this setup in place.
+
+Now nun Storybook, and if you're lucky, you'll be greeted with:
 
 ![Storybook Cat Card](https://res.cloudinary.com/dqse2txyi/image/upload/v1649136596/blogs/nextjs-fullstack-app-template/cat-card-storybook_f10yic.png)
 

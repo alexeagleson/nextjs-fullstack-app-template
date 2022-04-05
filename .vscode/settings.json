@@ -11,6 +11,7 @@
     "Etyo",
     "nextjs",
     "npmrc",
+    "pravatar",
     "prettierignore",
     "prettierrc",
     "rgba",
@@ -20,5 +21,5 @@
     "unoptimized",
     "Vercel",
     "Viewports"
-  ]
+]
 }
