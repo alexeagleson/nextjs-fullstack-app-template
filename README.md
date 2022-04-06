@@ -402,6 +402,18 @@ module.exports = {
 };
 ```
 
+Then enable commitlint with Husky by using:
+
+```
+npx husky add .husky/commit-msg 'npx --no -- commitlint --edit "$1"'
+# Sometimes above command doesn't work in some command interpreters
+# You can try other commands below to write npx --no -- commitlint --edit $1
+# in the commit-msg file.
+npx husky add .husky/commit-msg \"npx --no -- commitlint --edit '$1'\"
+# or
+npx husky add .husky/commit-msg "npx --no -- commitlint --edit $1"
+```
+
 Feel free to try some commits that _don't_ follow the rules and see how they are not accepted, and you receive feedback that is designed to help you correct them.
 
 I'm going to create a new commit now with the message `ci: implement commitlint`.
