@@ -2,6 +2,10 @@ All code from this tutorial as a complete package is available in [this reposito
 
 If you find this tutorial helpful, please share it with your friends and colleagues! For more like it you can subscribe on [Youtube](https://www.youtube.com/channel/UCV5YqK3AaInd3lYFQqlp7Lw) or follow me on [Twitter](https://twitter.com/eagleson_alex).
 
+This tutorial is available as a video lesson if you prefer that format:
+
+{% youtube https://youtu.be/Iu5aZDqZt8E %}
+
 ## Table of Contents
 
 1. [What is Next.js?](#what-is-nextjs)
@@ -261,7 +265,6 @@ Those values are entirely at your discretion as to what is best for your team an
 .next
 dist
 node_modules
-*.md
 ```
 
 In that file I've placed a list of directories that I don't want Prettier to waste any resources working on. You can also use patterns like \*.html to ignore groups of types of files if you choose.
@@ -438,6 +441,7 @@ Within `settings.json` we will add the following values:
 ```json
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": true,
     "source.organizeImports": true
