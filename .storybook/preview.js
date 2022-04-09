@@ -1,4 +1,4 @@
-import { RouterContext } from 'next/dist/shared/lib/router-context'; // next 12
+import { RouterContext } from 'next/dist/shared/lib/router-context';
 import * as NextImage from 'next/image';
 import '../pages/globals.css';
 
