@@ -1,3 +1,4 @@
+import { RouterContext } from 'next/dist/shared/lib/router-context'; // next 12
 import * as NextImage from 'next/image';
 import '../pages/globals.css';
 
@@ -43,4 +44,7 @@ export const parameters = {
   },
   viewport: { viewports: customViewports },
   layout: 'fullscreen',
+  nextRouter: {
+    Provider: RouterContext.Provider,
+  },
 };
