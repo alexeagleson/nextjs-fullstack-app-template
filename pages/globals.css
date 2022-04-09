@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .btn-primary {
+    @apply border-0 p-2 px-6 bg-slate-100 rounded-md;
+  }
+}

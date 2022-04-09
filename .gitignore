@@ -35,7 +35,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
-# docs
-README.*.md
-
+# temporary working files
 /.stash
+
+README-*.md
