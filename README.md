@@ -1394,6 +1394,29 @@ About.getLayout = (page) => {
 };
 ```
 
+Then update `_app.tsx` as follows:
+
+`pages/_app.tsx`
+
+```tsx
+import type { AppProps } from 'next/app';
+import './globals.css';
+import { NextPageWithLayout } from './page';
+
+interface AppPropsWithLayout extends AppProps {
+  Component: NextPageWithLayout;
+}
+
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  // Use the layout defined at the page level, if available
+  const getLayout = Component.getLayout || ((page) => page);
+
+  return getLayout(<Component {...pageProps} />);
+}
+
+export default MyApp;
+```
+
 Finally, in the `mocks` files I have updated `PrimaryLayout.mocks.ts` to use `children: '{{component}}'` as a placeholder value to show in Storybook where a component would go, and I have removed the mock props in `SidebarLayout.mocks.ts` (though I do not remove the file, so I have the interface ready to go in case I ever need to add props).
 
 I have also changed the story titles from `templates/...` to `layouts/...`.

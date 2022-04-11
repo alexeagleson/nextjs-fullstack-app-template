@@ -1,0 +1,27 @@
+[
+  {
+    "url": "https://en.wikipedia.org/wiki/Cat",
+    "title": "This is a link to a search result about cats",
+    "text": "Did you know their whiskers can sense vibrations in the air?  Description of the search result. The description might be a bit long and it will tell you everything you need to know about the search result."
+  },
+  {
+    "url": "https://en.wikipedia.org/wiki/Dog",
+    "title": "This is a link to a search result about dogs",
+    "text": "They sure do love to bark.  Description of the search result. The description might be a bit long and it will tell you everything you need to know about the search result."
+  },
+  {
+    "url": "https://en.wikipedia.org/wiki/Cats_%26_Dogs",
+    "title": "This is a link to a search result about both cats and dogs",
+    "text": "Both of them have tails.  Description of the search result. The description might be a bit long and it will tell you everything you need to know about the search result."
+  },
+  {
+    "url": "https://en.wikipedia.org/wiki/Broccoli",
+    "title": "This is a link to a search result about broccoli",
+    "text": "Broccoli was invented by crossing cauliflower with pea seeds.  Description of the search result. The description might be a bit long and it will tell you everything you need to know about the search result."
+  },
+  {
+    "url": "https://en.wikipedia.org/wiki/Cauliflower",
+    "title": "This is a link to a search result about cauliflower",
+    "text": "Who invented cauliflower?  Description of the search result. The description might be a bit long and it will tell you everything you need to know about the search result."
+  }
+]
