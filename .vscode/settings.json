@@ -7,7 +7,9 @@
   },
   "cSpell.words": [
     "codenames",
+    "colour",
     "commitlint",
+    "datacentres",
     "devs",
     "Eagleson",
     "esbenp",
@@ -21,14 +23,19 @@
     "preload",
     "prettierignore",
     "prettierrc",
+    "regexes",
     "rgba",
     "scaleable",
     "signin",
     "Supabase",
+    "superpowered",
+    "tailwindcss",
     "typeof",
+    "typesafe",
     "unoptimized",
     "userinfo",
     "Vercel",
-    "Viewports"
+    "Viewports",
+    "WEBP"
   ]
 }

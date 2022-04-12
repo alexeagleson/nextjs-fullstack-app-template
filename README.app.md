@@ -1,33 +1,85 @@
+All code from this tutorial as a complete package is available in [this repository](https://github.com/alexeagleson/nextjs-fullstack-app-template).
+
+If you find this tutorial helpful, please share it with your friends and colleagues! For more like it you can subscribe on [Youtube](https://www.youtube.com/channel/UCV5YqK3AaInd3lYFQqlp7Lw) or follow me on [Twitter](https://twitter.com/eagleson_alex).
+
+This tutorial is available as a video lesson if you prefer that format:
+
+{% youtube  %}
+
+## Table of Contents
+
+1. [Prerequisites](#prerequisites)
+1. [Introduction](#introduction)
+1. [Adding Tailwind](#adding-tailwind)
+1. [Storybook Support for Tailwind](#storybook-support-for-tailwind)
+1. [Scoping and Requirements](#scoping-and-requirements)
+1. [Planning (Front-End)](#planning-front-end)
+1. [Development (Front-End): Search Component](#development-front-end-search-component)
+1. [Development (Front-End): Header and Footer](#development-front-end-header-and-footer)
+1. [Development (Front-End): Layout](#development-front-end-layout)
+1. [Development (Front-End): Results](#development-front-end-results)
+1. [Planning (Back-End)](#planning-back-end)
+1. [Development (Back-End): Search Data](#development-back-end-search-data)
+1. [Development (Back-End): API Routes](#development-back-end-api-routes)
+1. [Static and Dynamic Page Generation in Next.js](#static-and-dynamic-page-generation-in-nextjs)
+1. [Finishing Touches](#finishing-touches)
+1. [Themes and Design Systems](#themes-and-design-systems)
+1. [Next Steps](#next-steps)
+1. [Wrapping Up](#wrapping-up)
+
 ## Prerequisites
 
-Update your `next.config.js` file:
+**IMPORTANT: This tutorial is a continuation of a [previous tutorial](https://dev.to/alexeagleson/how-to-build-scalable-architecture-for-your-nextjs-project-2pb7#adding-storybook).**
 
-```js
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-  images: {
-    domains: ['i.pravatar.cc'],
-  },
-  i18n: {
-    locales: ['en', 'fr'],
-    defaultLocale: 'en',
-    // localeDetection: false,
-  },
-};
+If you wish to align the repository with the start of this tutorial, clone the repository and `git checkout 6630ca95c25e66d7b6c7b1aad92151b481c1b9c5`.
 
-module.exports = nextConfig;
+It should be possible to follow this tutorial with a new blank project if you choose without all the configuration from the previous setup, but I would recommend you at least read through the article to understand the project architecture before we get started.
+
+If you wish to try starting from a fresh Next.js project, run the following commands to set up the core project:
+
+```
+npx create-next-app --ts
 ```
 
-## Storybook recap
+Then you will also want to install Storybook. [Follow these instructions](https://dev.to/alexeagleson/how-to-build-scalable-architecture-for-your-nextjs-project-2pb7#adding-storybook) in a new project to get aligned with the beginning of this tutorial.
 
-## Installing Tailwind
+We also create all of our components off a base template that includes styles, stories and mock data. You can get that template from [here](https://github.com/alexeagleson/nextjs-fullstack-app-template/tree/main/components/templates/base).
+
+Good luck, and I hope you enjoy this tutorial.
+
+## Introduction
+
+This tutorial is the second in a series about building scaleable Next.js architecture.
+
+In the first installment, we focused entirely on the base project setup, we didn't actually begin building an application, just a simple component template to show the process.
+
+In this next stage we will be looking at actually building out an application. We'll be looking at how Next.js handles some fundamental things like routing, image optimization, static vs dynamic pages, building an API, and of course: styling solutions.
+
+We'll be using the current "hot commodity" [Tailwind CSS](https://tailwindcss.com/) as the tool we use to organize our design system, and get styles implemented quickly while maintaining a consistent look and feel to the product.
+
+Finally and maybe most importantly, this tutorial is also focused on trying to replicate the real software development process. So we won't just be jumping into building, we'll be looking at what the requirements are based on our goals, what the scope of the project should be, and planning out in advance how we are going to build both the front-end and back-end.
+
+By the end of the tutorial our goal will be to have a functional full-stack Next.js app that we can push to a production site and continue to iterate on in the future with a team of developers following a consistent system.
+
+If that all sounds good to you, let's jump right in!
+
+## Adding Tailwind
+
+Tailwind CSS describes itself as:
+
+> A utility-first CSS framework packed with classes like flex, pt-4, text-center and rotate-90 that can be composed to build any design, directly in your markup.
+
+So basically it's a way to enforce a bit of consistency and convenience, while also placing most of your styles closer to the components you're developing.
+
+Tailwind's compiler will analyze all your code and only bundle raw CSS based on the classes you actually use, so it requires some dependencies to get up and running.
+
+We begin by running the following commands in the root directory of our project:
 
 ```
 yarn add -D tailwindcss postcss autoprefixer
 ```
 
-Tailwind will compile into regualr CSS for your final build so there is no need for it to exist as a runtime dependency in your project.
+Tailwind will compile into regular CSS for your final build so there is no need for it to exist as a runtime dependency in your project.
 
 [postcss](https://www.npmjs.com/package/postcss) and [autoprefixer](https://www.npmjs.com/package/autoprefixer) are tools for transforming CSS that Tailwind uses to do its job.
 
@@ -117,7 +169,7 @@ Home.getLayout = (page) => {
 
 Now let's test to make sure Tailwind is installed and configured properly.
 
-Notice that `className` on the section component in the above home page? That's tailwind right there, essentially just quick shorthands for the CSS proeprties you're already familiar with.
+Notice that `className` on the section component in the above home page? That's tailwind right there, essentially just quick shorthands for the CSS properties you're already familiar with.
 
 Without Tailwind installed and configured they won't do anything, but with Tailwind we should see a blue/cyan linear gradient background.
 
@@ -133,7 +185,9 @@ And go to [http://localhost:3000](http://localhost:3000).
 
 Looks like everything is setup. We only have one problem, if you try and run Storybook you're not going to see your styles. Your Next.js is setup to process your Tailwind classes, but by default Storybook is not.
 
-### Storybook and Tailwind CSS
+## Storybook Support for Tailwind
+
+_If you don't have Storybook installed and configured already, remember to read the [prerequisites](#prerequisites) section of this guide._
 
 Start by adding the PostCSS addon for Storybook:
 
@@ -181,7 +235,7 @@ module.exports = {
 };
 ```
 
-I've just added our blue/cyan gradiet to the `BaseTemplate.tsx` component to test in Storybook to ensure it's properly compiling Tailwind styles (I removed the class again immediately after the test).
+I've just added our blue/cyan gradient to the `BaseTemplate.tsx` component to test in Storybook to ensure it's properly compiling Tailwind styles (I removed the class again immediately after the test).
 
 ![Storybook Tailwind](https://res.cloudinary.com/dqse2txyi/image/upload/v1649455929/blogs/nextjs-app-tailwind/storybook-tailwind_liznmv.png)
 
@@ -189,7 +243,7 @@ Time to commit our progress with `git commit -m 'feat: implement tailwind css'`
 
 If you want to align with this step of the tutorial, clone the [repository](https://github.com/alexeagleson/nextjs-fullstack-app-template) and use `git checkout 6630ca95c25e66d7b6c7b1aad92151b481c1b9c5`.
 
-## The App: Scoping and Requirements
+## Scoping and Requirements
 
 One thing I would like to do with this tutorial is cover, at least at a very high level, the general software development lifecycle. Obviously this topic can span full posts and entire books, but I think it's important to touch on the concepts especially for those devs following along with the tutorial who may not have the existing experience working with real projects in the industry. That is one of the goals of this tutorial series.
 
@@ -205,19 +259,19 @@ It turns out that I (the client) has a list of particular topics that I would li
 
 - Styling
 - Routing
-- Sharing state between routes
 - API routes
 - Static and dynamic pages
 - Image optimization
 
 ### Nice-to-haves:
 
+- Sharing state between routes
 - Authentication
 - Internationalization
 - Unit and end-to-end testing
 - Data persistence (database)
 
-Notes: The two separate footers are not required. Just one (showing locaiton) is enough.
+Notes: The two separate footers are not required. Just one (showing location) is enough.
 
 Great. That really helps me decide how I am going to scope the project.
 
@@ -233,18 +287,15 @@ After spending some time reviewing popular sites out there to get ideas, I have 
 
 Why? Well let's review the requirements:
 
-### Must haves:
-
 - Styling _(Google has a simple design, we'll use Tailwind CSS to recreate it)_
 - Routing _(we'll demonstrate two routes, the main "home" page and a "results" page)_
-- Sharing state between routes _(that will likely be our search query term)_
 - API routes _(we'll use the `fetch` API to query for some mock search data with an API route)_
 - Static and dynamic pages _(main page can be static, search page dynamic based on search query)_
 - Image optimization _(the Google logo)_
 
 Excellent! We have our requirements and scope, and now we are ready to work.
 
-## The App: Front-End Planning
+## Planning (Front-End)
 
 Before we dive in and start making components, let's take a bit of time to look at the whole project holistically and get an idea what components we are going to need. Normally this is likely where you would involve your designer in your process and use an industry grade tool like [Figma](https://www.figma.com) to plan out and design the components you are going to need before you even begin thinking about code.
 
@@ -267,19 +318,19 @@ So you can see in the above I've isolated at least a few components at minimum:
 
 The above is just one possible approach of a near infinite number even for something as simple as this. This is the project design stage and there honestly is no one right answer on exactly how to do it. Most people find in there career after a few years of getting the coding down, this is the stuff that ends up being the real challenge.
 
-A good app will have the team spending much more time getting the design and plan in place, so that the absolutely minimum amount of coding needs to be done to achieve that goal. The coding and development stage is usually not only the most expensive, but it's also the most costly and complex to "undo" if requirements were not correc tthe first time.
+A good app will have the team spending much more time getting the design and plan in place, so that the absolutely minimum amount of coding needs to be done to achieve that goal. The coding and development stage is usually not only the most expensive, but it's also the most costly and complex to "undo" if requirements were not correct the first time.
 
-I'll stop short of getting into the beaurocrarcy of it, because of course the reality is never this cut and dry, but hopefully you can see what I'm getting at. If at all possible, do it once, do it right, and be consistent. Other developers (and your future self) will thank you.
+I'll stop short of getting into the bureaucracy of it, because of course the reality is never this cut and dry, but hopefully you can see what I'm getting at. If at all possible, do it once, do it right, and be consistent. Other developers (and your future self) will thank you.
 
 With that out of the way, I think we're finally ready to begin development on the front-end components!
 
-## The App: Front-End Development (Home)
+## Development (Front-End): Search Component
 
 We will be doing ALL of our component designing and testing in Storybook.
 
 You'll find that will be a recurring theme in our development process. It's a great way to make sure that the components we build look correct in isolation, so we can validate that without interference from other parts of the app, and then place them into our app afterward once they have been verified.
 
-For this reason I actually have the flexibility to start working on whicever component I like. I'm going to beging with the `Search` component first.
+For this reason I actually have the flexibility to start working on whichever component I like. I'm going to begin with the `Search` component first.
 
 Create a new directory called `/utility` inside `/components`. As before, we'll start by copying our `templates/base` into the `components/utility` directory to start our component.
 
@@ -297,7 +348,7 @@ yarn storybook
 
 ![Storybook Search Template](https://res.cloudinary.com/dqse2txyi/image/upload/v1649472567/blogs/nextjs-app-tailwind/storybook-search-template_g0xxfk.png)
 
-_(You may still have some lingering Tailwind test styles on the template which can be removed. Note also that I am leaving the `.module.css` template on here for those who chooose not to use Tailwind, but we will not be using it in this tutorial)_
+_(You may still have some lingering Tailwind test styles on the template which can be removed. Note also that I am leaving the `.module.css` template on here for those who choose not to use Tailwind, but we will not be using it in this tutorial)_
 
 Alright time to begin building the component! This is the one I've outlined in green in the original planning design above and titled as `Search`.
 
@@ -323,7 +374,7 @@ const Search: React.FC<ISearch> = () => {
 export default Search;
 ```
 
-![Seach Component Step 01](https://res.cloudinary.com/dqse2txyi/image/upload/v1649476578/blogs/nextjs-app-tailwind/search-component-step-01_llnjz1.png)
+![Search Component Step 01](https://res.cloudinary.com/dqse2txyi/image/upload/v1649476578/blogs/nextjs-app-tailwind/search-component-step-01_llnjz1.png)
 
 Look at that `Search` component, pretty incredible eh? Hit the submit button in storybook and get an error since you don't have a backend to handle it. I'd say it's basically done... well maybe not.
 
@@ -376,7 +427,7 @@ We can abstract those repeat classes on buttons out to a separate `@apply` direc
 
 Note: please read through Tailwind's extremely good [documentation on this concept](https://tailwindcss.com/docs/reusing-styles) because it discusses how in a lot of cases the `@apply` solution can actually reduce future maintainability, so you just want to make sure it's the right decision first.
 
-I'm using it here becasue I just want you to be aware of it and how to do it, and secondly they use an example of a global button style as one of the times that it should be used, so I feel confident using it in this example.
+I'm using it here because I just want you to be aware of it and how to do it, and secondly they use an example of a global button style as one of the times that it should be used, so I feel confident using it in this example.
 
 We just need to remove those repeat button styles and put them into `pages/global.css` and replace with an actual class name like so:
 
@@ -423,7 +474,7 @@ export default Search;
 
 Excellent. Our `Search` component is finally ready visually (I've opted not to use the magnifying icon as it is embedded within the input element which makes the CSS a bit more complex than the intended scope of this tutorial.)
 
-![Seach Component Step 01](https://res.cloudinary.com/dqse2txyi/image/upload/v1649481216/blogs/nextjs-app-tailwind/search-component-step-02_o2sjfo.png)
+![Search Component Step 01](https://res.cloudinary.com/dqse2txyi/image/upload/v1649481216/blogs/nextjs-app-tailwind/search-component-step-02_o2sjfo.png)
 
 Try using the screen size button within Storybook (you can see it set to `sm` in the screenshot) to test at different mobile breakpoints. Notice we used the default 5/6 width on the input but set to `sm:w-96` once the screen begins to stretch to keep it from getting too large.
 
@@ -435,7 +486,7 @@ The last piece is to implement the management of the search state (basically kee
 
 The easiest way to do that is with the [useState](https://beta.reactjs.org/apis/usestate) hook.
 
-_(Reminder once again that this is not a React tutorial, if you are not familiar with `useState` then you have potentially jumped the gun into Next.js a little too quickly. Not to worry! Shouldn't take you long to pick up, the new [React documentation](https://beta.reactjs.org/) focused on hooks is probabaly the best wayto learn straight from the source)_
+_(Reminder once again that this is not a React tutorial, if you are not familiar with `useState` then you have potentially jumped the gun into Next.js a little too quickly. Not to worry! Shouldn't take you long to pick up, the new [React documentation](https://beta.reactjs.org/) focused on hooks is probably the best way to learn straight from the source)_
 
 `components/utility/base/Search.tsx`
 
@@ -478,7 +529,7 @@ export default Search;
 
 The above will allow you to track and react to changes in the search form on the `searchTerm` variable. I've also added a Javascript-based form handler (as opposed to the default HTML behavior) so we can use it later if we need it. The `preventDefault` steps the normal form submission behavior of making a POST to the server from occurring.
 
-![Seach Component Step 03](https://res.cloudinary.com/dqse2txyi/image/upload/v1649481924/blogs/nextjs-app-tailwind/search-component-step-03_rftvoi.png)
+![Search Component Step 03](https://res.cloudinary.com/dqse2txyi/image/upload/v1649481924/blogs/nextjs-app-tailwind/search-component-step-03_rftvoi.png)
 
 At this point we are not sure if the search term might need to be managed elsewhere in the app (other components might need to be able to read it) or how we are going to submit the form. Normally that would be part of the planning process and I would know before writing code, but I am including this default behavior here to show as an example how we will refactor later if needed.
 
@@ -488,7 +539,7 @@ Time to commit our progress with `git commit -m 'feat: create Search component'`
 
 If you want to align with this step of the tutorial, clone the [repository](https://github.com/alexeagleson/nextjs-fullstack-app-template) and use `git checkout 676a71b50755d859f46a12e54f8ea3484bf1f208`.
 
-### Header & Footer
+### Development (Front-End): Header and Footer
 
 We're gonna kick up the speed a bit here to get the basic remaining components in place.
 
@@ -498,7 +549,7 @@ However there is still a lot that's unique, the content for sure, the position a
 
 Let's get to building.
 
-Rmember in each case we are using the [BaseTemplate](https://dev.to/alexeagleson/how-to-build-scalable-architecture-for-your-nextjs-project-2pb7#creating-a-component-template). For `Header` the Story title is `navigation/Header`.
+Remember in each case we are using the [BaseTemplate](https://dev.to/alexeagleson/how-to-build-scalable-architecture-for-your-nextjs-project-2pb7#creating-a-component-template). For `Header` the Story title is `navigation/Header`.
 
 `components/navigation/header/Header.tsx`
 
@@ -566,7 +617,7 @@ We were told in our requirements that only one footer is required. Right now we 
 
 ![Header and Footer Initial](https://res.cloudinary.com/dqse2txyi/image/upload/v1649483860/blogs/nextjs-app-tailwind/header-and-footer-initial_iymsxk.png)
 
-### Layout
+### Development (Front-End): Layout
 
 Presuming you've been following up with the previous blog / tutorial you will already have a layout component in place in `components/layouts/primary/PrimaryLayout.tsx`. This is important because we already set that layout up to persist between page routing so it doesn't reload the same layout and nav bar when you transition from one page to another.
 
@@ -652,7 +703,7 @@ Home.getLayout = (page) => {
 };
 ```
 
-_(Note that I have downlaoded this version of the Google logo from [its Wikipedia page](https://en.wikipedia.org/wiki/Google_logo), named it `Google.png` and place it in the root `public` directory of the project)_
+_(Note that I have downloaded this version of the Google logo from [its Wikipedia page](https://en.wikipedia.org/wiki/Google_logo), named it `Google.png` and place it in the root `public` directory of the project)_
 
 There's two new Next.js specific components showcased here that I'd like to cover:
 
@@ -662,9 +713,9 @@ We have also taken advantage of the `locale` value in the [useRouter](https://ne
 
 Remember that our app's available locales can be customized in `next.config.js` on the `i18n` field. Right now we don't have any translation in place, so only the URL will switch (updating the text copy for `i18n` support will be a topic of a future tutorial.)
 
-- [Image](https://nextjs.org/docs/api-reference/next/image) - Image handling in web development is surprisingly complicated, and as such, Next has created a special `<Image>` tag to repalce the standard `<img>` which helps optimize your images on the server at build time and decide exactly the right one to serve to your users. The biggest immediate benefits here are load times (quality optimizations, PNG -> WEBP conversions as example) and also addressing [Cumulative Layout Shift](https://web.dev/cls/) issues. I highly recommend you click the link to the docs to read more about it. In this example we are only using a small subset of the features available.
+- [Image](https://nextjs.org/docs/api-reference/next/image) - Image handling in web development is surprisingly complicated, and as such, Next has created a special `<Image>` tag to replace the standard `<img>` which helps optimize your images on the server at build time and decide exactly the right one to serve to your users. The biggest immediate benefits here are load times (quality optimizations, PNG -> WEBP conversions as example) and also addressing [Cumulative Layout Shift](https://web.dev/cls/) issues. I highly recommend you click the link to the docs to read more about it. In this example we are only using a small subset of the features available.
 
-In addition to the Image component API docs, Next also includes a [special section talking about how they manage image optimzation](https://nextjs.org/docs/basic-features/image-optimization) which is well worth a read.
+In addition to the Image component API docs, Next also includes a [special section talking about how they manage image optimization](https://nextjs.org/docs/basic-features/image-optimization) which is well worth a read.
 
 Thanks to a few handy Tailwind classes, with the above version of `pages/index.tsx` we now have a fully desktop and mobile friendly (simplified) clone of Google's homepage you can view on your dev server.
 
@@ -672,13 +723,15 @@ Thanks to a few handy Tailwind classes, with the above version of `pages/index.t
 
 ![Google Custom Home Mobile](https://res.cloudinary.com/dqse2txyi/image/upload/v1649530936/blogs/nextjs-app-tailwind/google-homepage-mobile_n8cgpj.png)
 
-### Storybook for Pages
+### (Optional) Storybook for Pages
 
 One could make the argument that Storybook isn't quite the right place to test full pages. It's more focused on the individual components than the complete integration of all of that.
 
 That said however, Storybook does have [full support for pages](https://storybook.js.org/docs/react/writing-stories/build-pages-with-storybook) and recommendations for how to handle it, so with that in mind if you'd like to test your pages in Storybook then I'll show you the tools you'll need (at this stage) to get it working.
 
-The main challenge is always macking functional dependencies. So for example Next's router does not exist in Storybook. Other future challenges will be authentication and internationalization. Each of these can be individually managed though with moock functions that provide sensible defaults, and most of the popular ones (including Next router) have addons to handle most of the config for you.
+The main challenge is always mocking functional dependencies. So for example Next's router does not exist in Storybook. Other future challenges will be authentication and internationalization.
+
+Each of these can be individually managed though with mock functions that provide sensible defaults, and most of the popular ones (including Next router) have addons to handle most of the config for you.
 
 Here's how to support Next Router in Storybook. Start by installing the addon and [reading its documentation](https://storybook.js.org/addons/storybook-addon-next-router).
 
@@ -742,7 +795,7 @@ Things are in a good state so time to commit our progress with `git commit -m 'f
 
 If you want to align with this step of the tutorial, clone the [repository](https://github.com/alexeagleson/nextjs-fullstack-app-template) and use `git checkout 9ff325aceb0e2096fa618d78489beec2c00dea12`.
 
-## The App: Front-End Development (Results)
+## Development (Front-End): Results
 
 We still have the "Results" page to do, but the nice thing is there's a LOT of overlap so we really only have one more custom component to build (Search Result) as well as setting a variant of the layout (home is centered on the page while the results are left-aligned).
 
@@ -888,9 +941,9 @@ You could easily create a modified version of that component and place it as a c
 
 If you want to align with this step of the tutorial, clone the [repository](https://github.com/alexeagleson/nextjs-fullstack-app-template) and use `git checkout 3c4cf387cfd9112fe26c5dd268c293d7c1c00f5f`.
 
-## The App: Back-End Planning
+## Planning (Back-End)
 
-Now that we have the visual aspect of the application essentiall feature complete (that we know of at this stage) it's time to move onto the back-end.
+Now that we have the visual aspect of the application essentially feature complete (that we know of at this stage) it's time to move onto the back-end.
 
 The great thing about Next.js is that it really is a complete full stack solution. Because pages are rendered on the server, obviously that means you have access to a server environment, and that means you can securely do things like access your database directly without needing to expose credentials to the client browser.
 
@@ -935,7 +988,7 @@ I'll note that in this flow technically the `results` page could just query the 
 
 Now with all that planning in place, I think we are ready to build.
 
-## Back-End: Building the App
+## Development (Back-End): Search Data
 
 We'll begin with the mock database. When working with Node/Javascript/Typescript etc most real database that you query will be done using Node drivers for those DBs which will returns the results in JSON format. JSON is one of (if not THE) most popular formats for transmitting data on the web, so if your app can handle JSON payloads you'll be in very good shape to handle data from many different sources.
 
@@ -993,7 +1046,7 @@ export interface ISearchData {
 }
 ```
 
-This interface is now the **source of turth** for everything related to search data in the app. If we every change or add new fields, we add them here and then I want to see every API and every component in the app that uses that data to immediately break and throw a warning that I have to update those as well to handle the schema change.
+This interface is now the **source of truth** for everything related to search data in the app. If we every change or add new fields, we add them here and then I want to see every API and every component in the app that uses that data to immediately break and throw a warning that I have to update those as well to handle the schema change.
 
 For that reason there is one place I need to update already. Our `SearchResult.tsx` component has its own explicit type for url / title / text. Instead of that I'm going to refactor it to extend this type so they always remain aligned:
 
@@ -1010,7 +1063,7 @@ export type ISearchResult = ISearchData & React.ComponentPropsWithoutRef<'div'>;
 
 Everything else below the ellipsis for the component is the same, only the type and imports have been updated.
 
-## API Routes
+## Development (Back-End): API Routes
 
 I'm going to begin with the data and work my way out. I've already created the data in the mock database. The next connection point to that data is our [API route](https://nextjs.org/docs/api-routes/introduction) that will be loading it and returning a filtered version of it to whoever is querying.
 
@@ -1057,7 +1110,7 @@ export default function handler(
 
 Let's unpack the above.
 
-We'll start with the `database`. We're very spoiled to have such amazing tooling in this day and age. By default Typescript will be able to handle the import of raw JSON files and even provide types for us based on the schema that it detects on the fields in the file. We don't even need to explicilty cast it.
+We'll start with the `database`. We're very spoiled to have such amazing tooling in this day and age. By default Typescript will be able to handle the import of raw JSON files and even provide types for us based on the schema that it detects on the fields in the file. We don't even need to explicitly cast it.
 
 This behavior is enabled with the `esModuleInterop` and `resolveJsonModule` values in your `tsconfig.json` file in the root of your project, both of which are enabled by default in the Next.js Typescript template we are using.
 
@@ -1091,9 +1144,9 @@ There's our result! If you look closely it's returned 2/5 entires from our mock 
 
 Since our search term was `dog` I'd say that's a good sign things are working well.
 
-Let's switch gears and set up your `results` page to use this endpoint and get the search resutls to display.
+Let's switch gears and set up your `results` page to use this endpoint and get the search results to display.
 
-### GetServerSideProps
+## Static and Dynamic Page Generation in Next.js
 
 Now we are ready to introduce our first [getServerSideProps](https://nextjs.org/docs/basic-features/data-fetching/get-server-side-props) function. We'll be adding it to our results page so that we can take the search term from the URL of the initial request and use it to fetch search data that we render the page with.
 
@@ -1186,7 +1239,7 @@ For now, while we are working on the back-end we will be doing all our testing o
 
 Just before you run the dev server, let's talk about what's happening. There's a lot going on here so I've add four numbered 1-2-3-4 comments in the code above to talk about.
 
-1. The `query` field on the context object that `getServerSideProps` receives will have the query parameter from the URL. So this page is expecting to receive a URL like `/results?search=something` and that "something" will be available as avariable on `query.search` that we extract into the `searchTerm` variable.
+1. The `query` field on the context object that `getServerSideProps` receives will have the query parameter from the URL. So this page is expecting to receive a URL like `/results?search=something` and that "something" will be available as available on `query.search` that we extract into the `searchTerm` variable.
 
 2. Here we are querying our own APi we created! Same values and headers we did with cURL test. The search term will be what we extract from the URL, and we'll save the result in `searchResults` which defaults to an empty array.
 
@@ -1210,7 +1263,7 @@ Time to commit our progress with `git commit -m 'feat: implement search API and 
 
 If you want to align with this step of the tutorial, clone the [repository](https://github.com/alexeagleson/nextjs-fullstack-app-template) and use `git checkout f7321a266c51528d2369bf5d5862bc4ace4fdfcb`.
 
-### Updating URL with search term
+## Finishing Touches
 
 I'm going to have to backtrack a little bit, turns out there was one more front-end task that I forgot before moving to the back-end.
 
@@ -1286,7 +1339,7 @@ Time to commit our progress with `git commit -m 'feat: connect search input to r
 
 If you want to align with this step of the tutorial, clone the [repository](https://github.com/alexeagleson/nextjs-fullstack-app-template) and use `git checkout `.
 
-## Theming
+## Themes and Design Systems
 
 Although the app is "feature complete" as per the scope of this article, there is one final related topic that I want to touch on that I think is absolutely critical: [theming](https://material.io/design/introduction#theming).
 
@@ -1325,7 +1378,7 @@ This is just a very basic introduction, I am absolutely not a designer myself bu
 
 The final part of this tutorial is going to look at Tailwind CSS's specific implementation of a design system and how you can use it to make your app better.
 
-### Design System in Tailwind
+### Design System with Tailwind
 
 Like everything, before we begin I always recommend you first read [the documentation](https://tailwindcss.com/docs/theme). Tailwind's docs are fantastic and will help you get up and running quickly.
 
@@ -1402,12 +1455,6 @@ There's more cool stuff you can do with the theme we didn't mention here. The [c
 
 For example if you wanted to set a `blue` colour and then later reference that exact colour on a background while still on the theme itself with `theme('color.blue')`.
 
----
+## Wrapping Up
 
-next optimizaiton static
-
-https://stackoverflow.com/a/67926309
-
-THEMES
-
-API testing
+TODO
