@@ -73,7 +73,11 @@ So basically it's a way to enforce a bit of consistency and convenience, while a
 
 Tailwind's compiler will analyze all your code and only bundle raw CSS based on the classes you actually use, so it requires some dependencies to get up and running.
 
-We begin by running the following commands in the root directory of our project:
+Before we get started I would very highly recommend the [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss) extension for VS Code. It gives you autocomplete for Tailwind styles, shows you the actual CSS values being applied, integrates with your custom theme, and generally and makes working with Tailwind so much smoother.
+
+![Tailwind CSS Intellisense](https://res.cloudinary.com/dqse2txyi/image/upload/v1649774048/blogs/nextjs-app-tailwind/tailwind-vscode-extension_lbp2kp.png)
+
+Now, let's begin by running the following commands in the root directory of our project:
 
 ```
 yarn add -D tailwindcss postcss autoprefixer
@@ -1454,6 +1458,102 @@ That's it!
 There's more cool stuff you can do with the theme we didn't mention here. The [colour specific documentation](https://tailwindcss.com/docs/customizing-colors) is worth a look, as is the concept of using a self-referencing function to get access to the theme value.
 
 For example if you wanted to set a `blue` colour and then later reference that exact colour on a background while still on the theme itself with `theme('color.blue')`.
+
+## Sharing State Between Pages
+
+One topic that is critically important for large Next.js apps that we haven't yet addressed is the ability to share state between pages.
+
+In traditional single page React apps it's quite simple to pass your props or wrap the app in context, but how is that handled in Next when transitioning to a completely separate page?
+
+The answer is that we leverage the top level `_app.tsx` component to manage our state. As long as we are using Next's built in router or the special Next `<Link>` component, Next will be able to handle the persistance of state in our app between pages.
+
+_The same general rules for React state still apply, if the user refreshes the page or manually enters a URL it will be lost. In those cases if you want persistance you would want to look at [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) or a state management packaged solution that includes support for local storage like [Recoil](https://recoiljs.org/docs/guides/atom-effects/)_
+
+Just for a quick demonstration of how to use it, we will be implementing a mock "auth" state that is controlled with our "Sign In" button. Our goal will be that your authenticated state will still persist even when hitting the search button and navigation to the `/results` page.
+
+We will be using [React context](https://beta.reactjs.org/apis/usecontext) for this. Down the road when you implement a real auth service, you could potentially even connect it to this component we are going to create and replace the mock data with real data, while still using our context solution to control the UI state.
+
+First things first I think it's time to create an additional root directory. We need a place to store React specific logic (like context and custom hooks) that is not the same as pure UI (components) or domain logic and services (lib).
+
+Proper project structure is critically important and there are some great [resources about it](https://www.robinwieruch.de/react-folder-structure/) out there. I want to find the right balance between too compact (too much unrelated in one directory) and too abstract (directories for every different concept no matter how small).
+
+For our use case I am going to create a root directory called `/state` which will be intended to hold both custom hooks and React context. The two are usually tightly related so I am comfortable keeping them together for the time being.
+
+Within `/state` I will create a directory called `/auth` which will manage everything related to the state of authentication in our app.
+
+`state/auth/AuthContext.tsx`
+
+```tsx
+import { createContext, useState } from 'react';
+
+interface IAuthContext {
+  authenticated: boolean;
+  login: () => void;
+  logOut: () => void;
+}
+
+const defaultValue: IAuthContext = {
+  authenticated: false,
+  login: () => undefined,
+  logOut: () => undefined,
+};
+
+const AuthContext = createContext<IAuthContext>(defaultValue);
+
+export const AuthProvider: React.FC = ({ children }) => {
+  const [authenticated, setAuthenticated] = useState(
+    defaultValue.authenticated
+  );
+  const login = () => setAuthenticated(true);
+  const logOut = () => setAuthenticated(false);
+
+  return (
+    <AuthContext.Provider value={{ authenticated, login, logOut }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export default AuthContext;
+```
+
+The above component will provide context to our entire application that any component can use to check if the user is authenticated to see certain content. When that authentication state changes (using one of the two handy login/logOut functions we have provided) then all children of the context provider will re-render and update their state.
+
+_(Note when I say all children I mean **ALL** children, even ones that don't use the authenticated context value. This is an important concept to understand, I would recommend you read more about it if you aren't familiar with that concept. [This](https://beta.reactjs.org/apis/usecontext#optimizing-re-renders-when-passing-objects-and-functions) is a place to start. It's one of the reasons why global state management libraries like Redux and Recoil are so widely used is that they have ways of working around this behavior if you need to)_
+
+We will create a new button component called `AuthButton`. This component is going to be dependent on the context provided by `AuthContext`, so we need to remember that when we use this button somewhere up the component tree we will need an `AuthContext.Provider` component for it to work -- the trick is to remember that's not just for our app, that applies to Storybook as well! For now though, let's just build the component.
+
+// [TODO] description copy base component rename to buttons storybook title
+
+`components/buttons/auth/AuthButton.tsx`
+
+```tsx
+import { useContext } from 'react';
+import AuthContext from '../../../state/auth/AuthContext';
+import styles from './AuthButton.module.css';
+
+export interface IAuthButton extends React.ComponentPropsWithoutRef<'button'> {}
+
+const AuthButton: React.FC<IAuthButton> = ({ className, ...buttonProps }) => {
+  const { authenticated, login, logOut } = useContext(AuthContext);
+
+  return (
+    <button
+      onClick={authenticated ? logOut : login}
+      className={`${styles.container} ${className} border-1 p-2 px-4 sm:px-6 bg-blue-500 rounded text-white w-28`}
+      {...buttonProps}
+    >
+      {authenticated ? 'Sign Out' : 'Sign In'}
+    </button>
+  );
+};
+
+export default AuthButton;
+```
+
+// [TODO] description \_app.tsx
+
+// [TODO] storybook aut context decorator
 
 ## Wrapping Up
 
