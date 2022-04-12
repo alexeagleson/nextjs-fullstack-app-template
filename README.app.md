@@ -1286,6 +1286,122 @@ Time to commit our progress with `git commit -m 'feat: connect search input to r
 
 If you want to align with this step of the tutorial, clone the [repository](https://github.com/alexeagleson/nextjs-fullstack-app-template) and use `git checkout `.
 
+## Theming
+
+Although the app is "feature complete" as per the scope of this article, there is one final related topic that I want to touch on that I think is absolutely critical: [theming](https://material.io/design/introduction#theming).
+
+The link I made above is not specific to Tailwind or any one particular implementation of a theme, because I wanted to first talk about the importance of theming as a concept before we apply it to our app.
+
+As you get more experienced and build more apps you'll realize your CSS naturally starts to look something like:
+
+```css
+.card {
+  background-color: red;
+  padding: 12px;
+}
+
+.nav-bar {
+  background-color: red;
+}
+
+.content-section {
+  padding: 12px 24px;
+}
+
+.title {
+  font-size: 24px;
+}
+```
+
+This is a really contrived example, but you can probably see where I'm going. As your app grows and your CSS grows you end up using the same values over and over.
+
+Of course with modern CSS you can do something like `--primary-color: red;` and then `background-color: var(--primary-color)`, which in itself is already a great improvement, but often what you're looking for is to create a _consistent_ design system that automatically gets used as a default by the pieces of your app without even having to explicitly say it.
+
+Every core component that needs a color should just have `--primary-color` on it by default rather than you having to be explicit about it. You should only need to do so if overriding it. Similarly with spacing, your app will feel a lot more consistent if all spacing between elements is a multiple of some value like `4px` or `8px`.
+
+That's what creating a design system (like Material Design for example) aims to do. Build a consistent look for your digital product and place a meaningful framework around it. A good design system will lead to a more consistent and predictable user experience, and also provide the path of least resistance for developers implementing it.
+
+This is just a very basic introduction, I am absolutely not a designer myself but I love working with good ones, because they make my job easier and our product better.
+
+The final part of this tutorial is going to look at Tailwind CSS's specific implementation of a design system and how you can use it to make your app better.
+
+### Design System in Tailwind
+
+Like everything, before we begin I always recommend you first read [the documentation](https://tailwindcss.com/docs/theme). Tailwind's docs are fantastic and will help you get up and running quickly.
+
+We actually already created a basic theme in the Tailwind installation section where we established the value of the different `xs` `sm` `md` etc screen breakpoints for our app. The theme lives in `tailwind.config.js` and we are going to expand on it.
+
+I revisited [Google](https://www.google.com) again to see if there's any little changes we can make to closer align the styles, a couple easy ones are: Google uses the `Arial` font, and the search bar is a bit wider than the max Tailwind static with we have available by default (`w-96`)
+
+So rather than explicitly override our components, let's update our theme so that the rest of the app can benefit from those conventions!
+
+`tailwind.config.js`
+
+```js
+module.exports = {
+  content: [
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
+  ],
+  theme: {
+    // Ensure these match with .storybook/preview.js
+    screens: {
+      xs: '375px',
+      sm: '600px',
+      md: '900px',
+      lg: '1200px',
+      xl: '1536px',
+    },
+    fontFamily: {
+      sans: ['Arial', 'sans-serif'],
+      serif: ['Garamond', 'serif'],
+    },
+    extend: {
+      colors: {
+        blue: {
+          500: '#1a73e8',
+        },
+      },
+      spacing: {
+        128: '32rem',
+      },
+    },
+  },
+  plugins: [],
+};
+```
+
+I've updated the `fontFamily` globally by setting the value there on the `theme` object. Within that theme object I also have a nested object called `extends`.
+
+Any values I place on the theme will completely replace Tailwind's defaults, but setting values on the same values inside `extends` will add those values in addition to the existing ones.
+
+I've overridden the `blue-500` colour with the actual colour Google uses on their button based on using the handy eyedropper in Firefox _(More Tools -> Eyedropper)_.
+
+![Sign In Button Colour](https://res.cloudinary.com/dqse2txyi/image/upload/v1649715221/blogs/nextjs-app-tailwind/sign-in-button_aqp8jm.png)
+
+That's what I've done with the new width 128 which will translate into a `w-128` Tailwind class. Let's swap out the `w-96` value for `w-128` on our `Search` component:
+
+`components/utility/search/Search.tsx`
+
+```tsx
+...
+<input
+  type="text"
+  className="rounded-full border-2 w-5/6 sm:w-128 h-12 px-3"
+  value={searchTerm}
+  onChange={(e) => setSearchTerm(e.target.value)}
+/>
+...
+```
+
+![Final Product](https://res.cloudinary.com/dqse2txyi/image/upload/v1649714215/blogs/nextjs-app-tailwind/Google_Final_Product_t16fon.png)
+
+That's it!
+
+There's more cool stuff you can do with the theme we didn't mention here. The [colour specific documentation](https://tailwindcss.com/docs/customizing-colors) is worth a look, as is the concept of using a self-referencing function to get access to the theme value.
+
+For example if you wanted to set a `blue` colour and then later reference that exact colour on a background while still on the theme itself with `theme('color.blue')`.
+
 ---
 
 next optimizaiton static
