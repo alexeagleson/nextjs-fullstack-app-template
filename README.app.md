@@ -1523,7 +1523,9 @@ _(Note when I say all children I mean **ALL** children, even ones that don't use
 
 We will create a new button component called `AuthButton`. This component is going to be dependent on the context provided by `AuthContext`, so we need to remember that when we use this button somewhere up the component tree we will need an `AuthContext.Provider` component for it to work -- the trick is to remember that's not just for our app, that applies to Storybook as well! For now though, let's just build the component.
 
-// [TODO] description copy base component rename to buttons storybook title
+Copy our `BaseComponent` over again into the `/components/button` directory and rename it to `auth`. We're going to replace all instances of `BaseComponent` with `AuthButton` including the filename. Make sure you also change the story title to `buttons/AuthButton` and remove any most data from the template.
+
+The structure of the `AuthButton` already exists, we are going to extract it out of our `Header` component into its own component like so:
 
 `components/buttons/auth/AuthButton.tsx`
 
@@ -1551,10 +1553,147 @@ const AuthButton: React.FC<IAuthButton> = ({ className, ...buttonProps }) => {
 export default AuthButton;
 ```
 
-// [TODO] description \_app.tsx
+Pay attention to the `useContext` invocation, that is how twe consume the `<AuthProvider>` context that will be wrapping our entire application. We'll get to that part last. The next step is to take this new auth button use it in our `Header`:
 
-// [TODO] storybook aut context decorator
+```tsx
+import Link from 'next/link';
+import AuthButton from '../../buttons/auth/AuthButton';
+
+export interface IHeader extends React.ComponentPropsWithoutRef<'header'> {}
+
+const Header: React.FC<IHeader> = ({ className, ...headerProps }) => {
+  return (
+    <header
+      {...headerProps}
+      className={`w-full flex flex-row justify-between ${className}`}
+    >
+      <div className="space-x-5 m-5">
+        <Link href="/">
+          <a className="hover:underline">Home</a>
+        </Link>
+        <Link href="/">
+          <a className="hover:underline">Store</a>
+        </Link>
+      </div>
+      <div className="space-x-5 m-5">
+        <Link href="/">
+          <a className="hover:underline hidden sm:inline">Gmail</a>
+        </Link>
+        <Link href="/">
+          <a className="hover:underline hidden sm:inline">Images</a>
+        </Link>
+        <AuthButton />
+      </div>
+    </header>
+  );
+};
+
+export default Header;
+```
+
+Finally we need to update `_app.tsx` which is the component that wraps our whole app. We want every piece of our app to have access to the Auth context, so right now that serves as the best place for it.
+
+Technically every time the auth updates the app will re-render, but that is okay since presumably a real user would only be signing in once per session.
+
+`pages/_app.tsx`
+
+```tsx
+import type { AppProps } from 'next/app';
+import { AuthProvider } from '../state/auth/AuthContext';
+import './globals.css';
+import { NextPageWithLayout } from './page';
+
+interface AppPropsWithLayout extends AppProps {
+  Component: NextPageWithLayout;
+}
+
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  // Use the layout defined at the page level, if available
+  const getLayout = Component.getLayout || ((page) => page);
+
+  return <AuthProvider>{getLayout(<Component {...pageProps} />)}</AuthProvider>;
+}
+
+export default MyApp;
+```
+
+And finally, if we want to be able to access these context values for the components when we run them in Storybook, we need to create a default story template that includes that context.
+
+For that we use Storybook decorators. Just export a const called `decorators` which React component(s) you want as a wrapper around all your stories.
+
+```js
+import { AuthProvider } from '../state/auth/AuthContext';
+
+...
+
+export const decorators = [
+  (Story) => (
+    <AuthProvider>
+      <Story />
+    </AuthProvider>
+  ),
+];
+```
+
+Thats it! Now run `yarn dev` and load [http://localhost:3000](http://localhost:3000)
+
+When you click on the "Sign In" button if all has gone correct it will toggle to a "Sign Out" which mimics the function of having logged into the site. Doing this is basic React behavior to toggle a button state.
+
+What is special about what we have done is when you enter a term into your search bar and hit search. It will navigate to a completely different page, the results page, but because of the React auth context wrapper your button should still show "Sign Out" if you had signed in on the home page.
+
+And that is persistent state between routes in Next.js
+
+## Next Steps
+
+I hope you found this tutorial and learned something about setting up a solid and scaleable Next.js project for you and your team.
+
+This is the first part of what is intended to be a multi-part series on creating a production quality Next.js app.
+
+Some of my ideas for future installments are below, I'd encourage you to leave some feedback about which ones you'd find most useful (or other ones if you don't see them below).
+
+- ~~- How to Build Scalable Architecture for your Next.js Project~~
+- ~~- How to build a fullstack Next.js app using API routes and Tailwind CSS~~
+- How to implement unit and end-to-end testing in a Next.s app with jest and playwright
+- How to add a global state manager to your Next.js app with Recoil
+- How to create a CI/CD pipeline with Github actions and Vercel
+- How to implement SSO authentication and internationalization in a Next.js app using NextAuth and i18next
+- How to connect a database to your Next.js app with Prisma and Supabase
+- How to manage multiple applications in a monorepo with Next.js and Nx
+
+Stay tuned and please don't hesitate to ask any questions, I'm happy to answer if I can!
 
 ## Wrapping Up
 
-TODO
+Remember that all code from this tutorial as a complete package is available in [this repository](https://github.com/alexeagleson/nextjs-fullstack-app-template).
+
+Please check some of my other learning tutorials. Feel free to leave a comment or question and share with others if you find any of them helpful:
+
+- [How to Build Scalable Architecture for your Next.js Project](https://dev.to/alexeagleson/how-to-build-scalable-architecture-for-your-nextjs-project-2pb7)
+
+- [How to Connect a React App to a Notion Database](https://dev.to/alexeagleson/how-to-connect-a-react-app-to-a-notion-database-51mc)
+
+- [How to use Node.js to backup your personal files](https://dev.to/alexeagleson/how-to-use-nodejs-to-backup-your-personal-files-and-learn-some-webdev-skills-along-the-way-541a)
+
+- [Introduction to Docker for Javascript Developers](https://dev.to/alexeagleson/docker-for-javascript-developers-41me)
+
+- [Learnings from React Conf 2021](https://dev.to/alexeagleson/learnings-from-react-conf-2021-17lg)
+
+- [How to Create a Dark Mode Component in React](https://dev.to/alexeagleson/how-to-create-a-dark-mode-component-in-react-3ibg)
+
+- [How to Analyze and Improve your 'Create React App' Production Build ](https://dev.to/alexeagleson/how-to-analyze-and-improve-your-create-react-app-production-build-4f34)
+
+- [How to Create and Publish a React Component Library](https://dev.to/alexeagleson/how-to-create-and-publish-a-react-component-library-2oe)
+
+- [How to use IndexedDB to Store Local Data for your Web App ](https://dev.to/alexeagleson/how-to-use-indexeddb-to-store-data-for-your-web-application-in-the-browser-1o90)
+
+- [Running a Local Web Server](https://dev.to/alexeagleson/understanding-the-modern-web-stack-running-a-local-web-server-4d8g)
+
+- [ESLint](https://dev.to/alexeagleson/understanding-the-modern-web-stack-linters-eslint-59pm)
+
+- [Prettier](https://dev.to/alexeagleson/understanding-the-modern-web-stack-prettier-214j)
+
+- [Babel](https://dev.to/alexeagleson/building-a-modern-web-stack-babel-3hfp)
+
+- [React & JSX](https://dev.to/alexeagleson/understanding-the-modern-web-stack-react-with-and-without-jsx-31c7)
+
+- [Webpack: The Basics](https://dev.to/alexeagleson/understanding-the-modern-web-stack-webpack-part-1-2mn1)
