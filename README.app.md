@@ -4,7 +4,7 @@ If you find this tutorial helpful, please share it with your friends and colleag
 
 This tutorial is available as a video lesson if you prefer that format:
 
-{% youtube  %}
+<!-- {% youtube  %} -->
 
 ## Table of Contents
 
@@ -13,16 +13,16 @@ This tutorial is available as a video lesson if you prefer that format:
 1. [Adding Tailwind](#adding-tailwind)
 1. [Storybook Support for Tailwind](#storybook-support-for-tailwind)
 1. [Scoping and Requirements](#scoping-and-requirements)
-1. [Planning (Front-End)](#planning-front-end)
-1. [Development (Front-End): Search Component](#development-front-end-search-component)
-1. [Development (Front-End): Header and Footer](#development-front-end-header-and-footer)
-1. [Development (Front-End): Layout](#development-front-end-layout)
-1. [Development (Front-End): Results](#development-front-end-results)
-1. [Planning (Back-End)](#planning-back-end)
-1. [Development (Back-End): Search Data](#development-back-end-search-data)
-1. [Development (Back-End): API Routes](#development-back-end-api-routes)
-1. [Static and Dynamic Page Generation in Next.js](#static-and-dynamic-page-generation-in-nextjs)
-1. [Finishing Touches](#finishing-touches)
+1. [Front End Planning](#front-end-planning)
+1. [Front End: Search Component](#front-end-search-component)
+1. [Front End: Header and Footer](#front-end-header-and-footer)
+1. [Front End: Layout](#front-end-layout)
+1. [Front End: Results](#front-end-results)
+1. [Back End Planning](#back-end-planning)
+1. [Back End: Search Data](#back-end-search-data)
+1. [Back End: API Routes](#back-end-api-routes)
+1. [Static and Dynamic Pages in Next.js](#static-and-dynamic-pages-in-nextjs)
+1. [Front End Finishing Touches](#front-end-finishing-touches)
 1. [Themes and Design Systems](#themes-and-design-systems)
 1. [Next Steps](#next-steps)
 1. [Wrapping Up](#wrapping-up)
@@ -31,7 +31,9 @@ This tutorial is available as a video lesson if you prefer that format:
 
 **IMPORTANT: This tutorial is a continuation of a [previous tutorial](https://dev.to/alexeagleson/how-to-build-scalable-architecture-for-your-nextjs-project-2pb7#adding-storybook).**
 
-If you wish to align the repository with the start of this tutorial, clone the repository and `git checkout 6630ca95c25e66d7b6c7b1aad92151b481c1b9c5`.
+If you wish to align the [repository](https://github.com/alexeagleson/nextjs-fullstack-app-template) with the start of this tutorial, clone the repository and `git checkout 6630ca95c25e66d7b6c7b1aad92151b481c1b9c5`.
+
+After you check out that commit, create a new branch to follow along with this tutorial. An example would be something like `git branch fullstack-tutorial` and then `git checkout fullstack-tutorial`.
 
 It should be possible to follow this tutorial with a new blank project if you choose without all the configuration from the previous setup, but I would recommend you at least read through the article to understand the project architecture before we get started.
 
@@ -57,7 +59,7 @@ In this next stage we will be looking at actually building out an application. W
 
 We'll be using the current "hot commodity" [Tailwind CSS](https://tailwindcss.com/) as the tool we use to organize our design system, and get styles implemented quickly while maintaining a consistent look and feel to the product.
 
-Finally and maybe most importantly, this tutorial is also focused on trying to replicate the real software development process. So we won't just be jumping into building, we'll be looking at what the requirements are based on our goals, what the scope of the project should be, and planning out in advance how we are going to build both the front-end and back-end.
+Finally and maybe most importantly, this tutorial is also focused on trying to replicate the real software development process. So we won't just be jumping into building, we'll be looking at what the requirements are based on our goals, what the scope of the project should be, and planning out in advance how we are going to build both the front end and back end.
 
 By the end of the tutorial our goal will be to have a functional full-stack Next.js app that we can push to a production site and continue to iterate on in the future with a team of developers following a consistent system.
 
@@ -299,7 +301,7 @@ Why? Well let's review the requirements:
 
 Excellent! We have our requirements and scope, and now we are ready to work.
 
-## Planning (Front-End)
+## Front End Planning
 
 Before we dive in and start making components, let's take a bit of time to look at the whole project holistically and get an idea what components we are going to need. Normally this is likely where you would involve your designer in your process and use an industry grade tool like [Figma](https://www.figma.com) to plan out and design the components you are going to need before you even begin thinking about code.
 
@@ -326,9 +328,9 @@ A good app will have the team spending much more time getting the design and pla
 
 I'll stop short of getting into the bureaucracy of it, because of course the reality is never this cut and dry, but hopefully you can see what I'm getting at. If at all possible, do it once, do it right, and be consistent. Other developers (and your future self) will thank you.
 
-With that out of the way, I think we're finally ready to begin development on the front-end components!
+With that out of the way, I think we're finally ready to begin development on the front end components!
 
-## Development (Front-End): Search Component
+## Front End: Search Component
 
 We will be doing ALL of our component designing and testing in Storybook.
 
@@ -543,7 +545,7 @@ Time to commit our progress with `git commit -m 'feat: create Search component'`
 
 If you want to align with this step of the tutorial, clone the [repository](https://github.com/alexeagleson/nextjs-fullstack-app-template) and use `git checkout 676a71b50755d859f46a12e54f8ea3484bf1f208`.
 
-### Development (Front-End): Header and Footer
+### Front End: Header and Footer
 
 We're gonna kick up the speed a bit here to get the basic remaining components in place.
 
@@ -596,9 +598,11 @@ export default Header;
 
 A cool feature of the above is that the Gmail & Images links disappear on the smallest screen size. In the real app we would have a menu that includes those items so they are not inaccessible on mobile, but on larger screens we get handy shortcuts to them.
 
-Another thing you'll notice is the special `<Link />` component provided by Next.js as an alternative to the `<a> anchor tag. These links are required in order to maintain stage between routes in Next which we'll get to in a little while. Learn more about it [here](https://nextjs.org/docs/routing/introduction#linking-between-pages).
+Another thing you'll notice is the special `<Link />` component provided by Next.js as an alternative to the `<a>` anchor tag. These links are required in order to maintain stage between routes in Next which we'll get to in a little while. Learn more about it [here](https://nextjs.org/docs/routing/introduction#linking-between-pages).
 
-Now we move onto the `Footer`.
+Now we move onto the Footer.
+
+components/navigation/header/Footer.tsx
 
 ```tsx
 export interface IFooter extends React.ComponentPropsWithoutRef<'footer'> {}
@@ -621,7 +625,7 @@ We were told in our requirements that only one footer is required. Right now we 
 
 ![Header and Footer Initial](https://res.cloudinary.com/dqse2txyi/image/upload/v1649483860/blogs/nextjs-app-tailwind/header-and-footer-initial_iymsxk.png)
 
-### Development (Front-End): Layout
+### Front End: Layout
 
 Presuming you've been following up with the previous blog / tutorial you will already have a layout component in place in `components/layouts/primary/PrimaryLayout.tsx`. This is important because we already set that layout up to persist between page routing so it doesn't reload the same layout and nav bar when you transition from one page to another.
 
@@ -799,13 +803,13 @@ Things are in a good state so time to commit our progress with `git commit -m 'f
 
 If you want to align with this step of the tutorial, clone the [repository](https://github.com/alexeagleson/nextjs-fullstack-app-template) and use `git checkout 9ff325aceb0e2096fa618d78489beec2c00dea12`.
 
-## Development (Front-End): Results
+## Front End: Results
 
 We still have the "Results" page to do, but the nice thing is there's a LOT of overlap so we really only have one more custom component to build (Search Result) as well as setting a variant of the layout (home is centered on the page while the results are left-aligned).
 
 Start by copying the `BaseTemplate`, rename `base` to `search-result` and replace each instance of `BaseTemplate` with `SearchResult`.
 
-```components/utility/search-result/SearchResult`
+`components/utility/search-result/SearchResult`
 
 ```tsx
 import Link from 'next/link';
@@ -945,13 +949,13 @@ You could easily create a modified version of that component and place it as a c
 
 If you want to align with this step of the tutorial, clone the [repository](https://github.com/alexeagleson/nextjs-fullstack-app-template) and use `git checkout 3c4cf387cfd9112fe26c5dd268c293d7c1c00f5f`.
 
-## Planning (Back-End)
+## Back End Planning
 
-Now that we have the visual aspect of the application essentially feature complete (that we know of at this stage) it's time to move onto the back-end.
+Now that we have the visual aspect of the application essentially feature complete (that we know of at this stage) it's time to move onto the back end.
 
 The great thing about Next.js is that it really is a complete full stack solution. Because pages are rendered on the server, obviously that means you have access to a server environment, and that means you can securely do things like access your database directly without needing to expose credentials to the client browser.
 
-The primary vehicles that Next.js uses to do this depends on whether your back-end functions are designed to provide data directly to pages being rendered, or if they are standard APIs that simply return data to any source in any shape (usually JSON, but not necessarily).
+The primary vehicles that Next.js uses to do this depends on whether your back end functions are designed to provide data directly to pages being rendered, or if they are standard APIs that simply return data to any source in any shape (usually JSON, but not necessarily).
 
 For the former, pages, we would use [getServerSideProps](https://nextjs.org/docs/basic-features/data-fetching/get-server-side-props) and for the latter we use [API routes](https://nextjs.org/docs/api-routes/introduction).
 
@@ -965,7 +969,7 @@ Adding a real database is beyond the scope of this tutorial (though it will be c
 
 Like many other aspects of web development, once you have the fundamentals, you can very quickly learn to work with any specific tool or implementation of those ideas.
 
-There are many ways to plan your back-end, but personally I believe the most important first step is to begin with your data model. From there you build out any relationships between those data models, and modify as needed based on requirements.
+There are many ways to plan your back end, but personally I believe the most important first step is to begin with your data model. From there you build out any relationships between those data models, and modify as needed based on requirements.
 
 If you are fortunate enough to have a rock solid data model to begin with that all parties are aligned with, and a schema to enforce correctness, you will be in an extremely good position to build your application.
 
@@ -992,7 +996,7 @@ I'll note that in this flow technically the `results` page could just query the 
 
 Now with all that planning in place, I think we are ready to build.
 
-## Development (Back-End): Search Data
+## Back End: Search Data
 
 We'll begin with the mock database. When working with Node/Javascript/Typescript etc most real database that you query will be done using Node drivers for those DBs which will returns the results in JSON format. JSON is one of (if not THE) most popular formats for transmitting data on the web, so if your app can handle JSON payloads you'll be in very good shape to handle data from many different sources.
 
@@ -1000,7 +1004,7 @@ That's the reason I've chosen to put our mock data inside a JSON file.
 
 We're going to begin using the `/lib` directory in the root. If you recall from the initial tutorial that is the folder I created which will store all the domain & business logic and data that our application deals with.
 
-If "components" and "pages" are the _front-end_ directories, then "lib" is our _back-end_ directory (though we will leverage it from both sides to get all the benefits that come with that, hence the _full-stack_ app we are building).
+If "components" and "pages" are the _front end_ directories, then "lib" is our _back end_ directory (though we will leverage it from both sides to get all the benefits that come with that, hence the _full-stack_ app we are building).
 
 Create a `/search` directory inside of `/lib`. This is where we will be placing all the logic related to the concept of search data and results. Within that we'll create a file called `database.json` and populate it with the dummy data below:
 
@@ -1067,7 +1071,7 @@ export type ISearchResult = ISearchData & React.ComponentPropsWithoutRef<'div'>;
 
 Everything else below the ellipsis for the component is the same, only the type and imports have been updated.
 
-## Development (Back-End): API Routes
+## Back End: API Routes
 
 I'm going to begin with the data and work my way out. I've already created the data in the mock database. The next connection point to that data is our [API route](https://nextjs.org/docs/api-routes/introduction) that will be loading it and returning a filtered version of it to whoever is querying.
 
@@ -1150,7 +1154,7 @@ Since our search term was `dog` I'd say that's a good sign things are working we
 
 Let's switch gears and set up your `results` page to use this endpoint and get the search results to display.
 
-## Static and Dynamic Page Generation in Next.js
+## Static and Dynamic Pages in Next.js
 
 Now we are ready to introduce our first [getServerSideProps](https://nextjs.org/docs/basic-features/data-fetching/get-server-side-props) function. We'll be adding it to our results page so that we can take the search term from the URL of the initial request and use it to fetch search data that we render the page with.
 
@@ -1239,7 +1243,7 @@ First of all, it's important to be aware that `getServerSideProps` is a special 
 
 Think of that as a good thing, we are talking about data fetching from our API, at this point we have moved away from the real purpose of Storybook. Ideally it should not be making API calls for data. Of course we could create a mock version of our `getServerSideProps` function and configure Storybook to use it, but that's beyond the scope of this tutorial.
 
-For now, while we are working on the back-end we will be doing all our testing on the development build by running `yarn dev`.
+For now, while we are working on the back end we will be doing all our testing on the development build by running `yarn dev`.
 
 Just before you run the dev server, let's talk about what's happening. There's a lot going on here so I've add four numbered 1-2-3-4 comments in the code above to talk about.
 
@@ -1267,9 +1271,9 @@ Time to commit our progress with `git commit -m 'feat: implement search API and 
 
 If you want to align with this step of the tutorial, clone the [repository](https://github.com/alexeagleson/nextjs-fullstack-app-template) and use `git checkout f7321a266c51528d2369bf5d5862bc4ace4fdfcb`.
 
-## Finishing Touches
+## Front End Finishing Touches
 
-I'm going to have to backtrack a little bit, turns out there was one more front-end task that I forgot before moving to the back-end.
+I'm going to have to backtrack a little bit, turns out there was one more front end task that I forgot before moving to the back end.
 
 We need to configure our `Search` component to redirect to the results page and put the search term into the URL when it does so that our search bar actually works.
 
