@@ -1164,7 +1164,7 @@ Our `results` page however is going to look different all the time depending on 
 
 We'll begin by doing a simple test of the `getServerSideProps` function by setting it up with a simple dummy prop.
 
-`components/utility/search-result/SearchResult.tsx`
+`pages/results/index.tsx`
 
 ```tsx
 import { GetServerSideProps } from 'next';
