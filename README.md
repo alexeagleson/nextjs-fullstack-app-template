@@ -81,7 +81,7 @@ You should get a nice little report on the command line of all the pages built w
 
 We would like for all developers working on this project to use the same Node engine and package manager we are using. To do that we create two new files:
 
-- `.nvmrc` - Will tell other uses of the project which version of Node is used
+- `.nvmrc` - Will tell other users of the project which version of Node is used
 - `.npmrc` - Will tell other users of the project which package manager is used
 
 We are using `Node v14 Fermium` and `yarn` for this project so we set those values like so:
@@ -495,7 +495,7 @@ Inside of your `.vscode` directory create a `launch.json` file:
 }
 ```
 
-With that script in place you have three choices for debugging. CLick the little "bug & play icon" on the left of VS Code or press `Ctrl + Shift + D` to access the debugging menu. You can select which script you want to run and start/stop it with the start/stop buttons.
+With that script in place you have three choices for debugging. Click the little "bug & play icon" on the left of VS Code or press `Ctrl + Shift + D` to access the debugging menu. You can select which script you want to run and start/stop it with the start/stop buttons.
 
 ![VS Code Debugger](https://res.cloudinary.com/dqse2txyi/image/upload/v1649168143/blogs/nextjs-fullstack-app-template/vscode-debugger_x1puqk.png)
 
